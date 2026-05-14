@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #0f172a;
+  --text-color: #f8fafc;
+  --accent-color: #38bdf8;
+  --editor-bg: rgba(255, 255, 255, 0.02);
+  --editor-border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-container {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  background: var(--editor-bg);
+  border-left: 1px solid var(--editor-border);
+  border-right: 1px solid var(--editor-border);
+  min-height: 100vh;
+  box-shadow: 0 0 40px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.7);
+  border-bottom: 1px solid var(--editor-border);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.save-button {
+  background: var(--accent-color);
+  color: #0f172a;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.save-button:active {
+  transform: translateY(0);
+}
+
+/* TipTap Editor Styles */
+.tiptap {
+  outline: none;
+  padding: 3rem 4rem;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  flex: 1;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: rgba(255, 255, 255, 0.3);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap h1 {
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  line-height: 1.2;
+}
+
+.tiptap h2 {
+  font-size: 1.8em;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+}
+
+.tiptap h3 {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+.tiptap p {
+  margin-bottom: 1.2em;
+}
+
+.tiptap strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.tiptap code {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent-color);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.tiptap pre {
+  background: #000;
+  color: #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tiptap pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.9em;
+}
+
+.tiptap blockquote {
+  border-left: 4px solid var(--accent-color);
+  padding-left: 1.5rem;
+  margin-left: 0;
+  margin-right: 0;
+  color: #94a3b8;
+  font-style: italic;
+  background: linear-gradient(to right, rgba(56, 189, 248, 0.05), transparent);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.tiptap ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.2em;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.2em;
+}
+
+.tiptap li {
+  margin-bottom: 0.5em;
+}
+
+.tiptap li > p {
+  margin-bottom: 0.5em;
+}
+
+.tiptap hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2.5rem 0;
+}
