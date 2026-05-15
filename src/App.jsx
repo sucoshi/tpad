@@ -107,6 +107,25 @@ const App = () => {
         placeholder: t('placeholder'),
       }),
     ],
+    editorProps: {
+      handlePaste: (view, event) => {
+        const text = event.clipboardData?.getData('text/plain');
+        if (!text) return false;
+
+        // Markdown判定 (行頭の見出し、太字、リンク、リスト開始など)
+        const markdownRegex = /^#{1,6}\s|\*\*|__|^[-*+]\s|^>|\[.+\]\(.+\)/m;
+        
+        if (markdownRegex.test(text)) {
+          // tiptap-markdownのパーサーを使ってMarkdownをHTML/ProseMirrorノードに変換して挿入
+          if (editor && editor.storage.markdown) {
+            const html = editor.storage.markdown.parser.parse(text);
+            editor.commands.insertContent(html);
+            return true; // デフォルトの貼り付け処理をスキップ
+          }
+        }
+        return false;
+      }
+    },
     content: '',
   });
 
