@@ -1,21 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
+  /* Dark Theme (Default) */
   --bg-color: #0f172a;
-  --text-color: #f8fafc;
+  --text-color: #f1f5f9;
+  --text-secondary: #94a3b8;
   --accent-color: #38bdf8;
-  --editor-bg: rgba(255, 255, 255, 0.02);
-  --editor-border: rgba(255, 255, 255, 0.08);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --header-bg: rgba(15, 23, 42, 0.8);
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --card-bg: #1e293b;
+  --code-bg: rgba(255, 255, 255, 0.1);
+}
+
+body.light-theme {
+  /* Light Theme */
+  --bg-color: #ffffff;
+  --text-color: #1e293b;
+  --text-secondary: #64748b;
+  --accent-color: #0284c7;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --header-bg: rgba(255, 255, 255, 0.8);
+  --hover-bg: rgba(0, 0, 0, 0.03);
+  --card-bg: #f8fafc;
+  --code-bg: rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
 }
 
 #root {
@@ -25,27 +51,24 @@ body {
 }
 
 .editor-container {
-  max-width: 900px;
+  max-width: 850px;
   margin: 0 auto;
   width: 100%;
-  background: var(--editor-bg);
-  border-left: 1px solid var(--editor-border);
-  border-right: 1px solid var(--editor-border);
   min-height: 100vh;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .app-header {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  background: rgba(15, 23, 42, 0.7);
-  border-bottom: 1px solid var(--editor-border);
-  padding: 1rem 2rem;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -53,13 +76,18 @@ body {
 
 .save-button {
   background: var(--accent-color);
-  color: #0f172a;
+  color: #fff;
   border: none;
-  padding: 0.5rem 1.2rem;
+  padding: 0.4rem 1rem;
   border-radius: 6px;
   font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+body.light-theme .save-button {
+  color: #fff;
 }
 
 .save-button:hover {
@@ -71,17 +99,17 @@ body {
   transform: translateY(0);
 }
 
+/* TipTap Editor Styles */
 .tiptap {
   outline: none;
-  padding: 2rem;
+  padding: 2.5rem 1.5rem;
   margin: 0;
-  font-size: 1.15rem;
-  line-height: 1.4;
-  min-height: calc(100vh - 100px);
+  font-size: 1rem;
+  min-height: calc(100vh - 80px);
   cursor: text;
 }
 
-/* エディタ内のブラウザ標準余白をすべてリセット */
+/* Typography Refinement */
 .tiptap p,
 .tiptap h1,
 .tiptap h2,
@@ -91,13 +119,16 @@ body {
 .tiptap li,
 .tiptap blockquote,
 .tiptap pre {
-  margin: 0;
-  padding: 0;
+  margin-bottom: 0.8em;
 }
 
+.tiptap p:last-child {
+  margin-bottom: 0;
+}
 
 .tiptap p.is-editor-empty:first-child::before {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-secondary);
+  opacity: 0.5;
   content: attr(data-placeholder);
   float: left;
   height: 0;
@@ -105,59 +136,34 @@ body {
 }
 
 .tiptap h1 {
-  font-size: 2.5em;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-top: 0.5em;
-  /* margin-bottom: 0.8em; */
+  margin-top: 1.2em;
+  margin-bottom: 0.6em;
   line-height: 1.2;
 }
 
 .tiptap h2 {
-  font-size: 1.8em;
+  font-size: 1.4rem;
   font-weight: 600;
-  margin-top: 0.5em;
-  /* margin-bottom: 0.8em; */
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
 }
 
 .tiptap h3 {
-  font-size: 1.4em;
+  font-size: 1.2rem;
   font-weight: 600;
-  margin-top: 0.2em;
-  /* margin-bottom: 0.5em; */
-}
-
-.tiptap h4 {
-  font-size: 1.4em;
-  font-weight: 600;
-  margin-top: 0.2em;
-  /* margin-bottom: 0.5em; */
-}
-
-.tiptap h5 {
-  font-size: 1.4em;
-  font-weight: 600;
-  margin-top: 0.2em;
-  /* margin-bottom: 0.5em; */
-}
-
-.tiptap h6 {
-  font-size: 1.4em;
-  font-weight: 600;
-  margin-top: 0.2em;
-  /* margin-bottom: 0.5em; */
-}
-
-.tiptap p {
-  /* margin-bottom: 1.2em; */
+  margin-top: 0.8em;
+  margin-bottom: 0.4em;
 }
 
 .tiptap strong {
-  color: #fff;
   font-weight: 700;
 }
 
 .tiptap code {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--code-bg);
   color: var(--accent-color);
   padding: 0.2em 0.4em;
   border-radius: 4px;
@@ -166,60 +172,48 @@ body {
 }
 
 .tiptap pre {
-  background: #000;
+  background: #1a1a1a;
   color: #e2e8f0;
-  padding: 1.5rem;
+  padding: 1.2rem;
   border-radius: 8px;
   overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  margin-top: 1.5rem;
-  /* margin-bottom: 1.5rem; */
+  margin: 1.5rem 0;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  line-height: 1.5;
+}
+
+body.light-theme .tiptap pre {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: rgba(0, 0, 0, 0.05);
 }
 
 .tiptap pre code {
   color: inherit;
   padding: 0;
   background: none;
-  font-size: 0.9em;
+  font-size: 0.85rem;
 }
 
 .tiptap blockquote {
-  border-left: 4px solid var(--accent-color);
-  padding-left: 1.5rem;
-  margin-left: 0;
-  margin-right: 0;
-  color: #94a3b8;
+  border-left: 3px solid var(--accent-color);
+  padding: 0.5rem 0 0.5rem 1.2rem;
+  margin: 1.5rem 0;
+  color: var(--text-secondary);
   font-style: italic;
-  background: linear-gradient(to right, rgba(56, 189, 248, 0.05), transparent);
-  padding-top: 0.5rem;
-  /* padding-bottom: 0.5rem; */
-  border-radius: 0 8px 8px 0;
+  background: linear-gradient(to right, var(--hover-bg), transparent);
+  border-radius: 0 4px 4px 0;
 }
 
-.tiptap ul {
-  list-style-type: disc;
+.tiptap ul, .tiptap ol {
   padding-left: 1.5rem;
-  /* margin-bottom: 1.2em; */
-}
-
-.tiptap ol {
-  list-style-type: decimal;
-  padding-left: 1.5rem;
-  /* margin-bottom: 1.2em; */
-}
-
-.tiptap li {
-  /* margin-bottom: 0.5em; */
-}
-
-.tiptap li>p {
-  /* margin-bottom: 0.5em; */
 }
 
 .tiptap hr {
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin: 2.5rem 0 0;
+  border-top: 1px solid var(--border-color);
+  margin: 2rem 0;
 }
 
 /* Task List Styles */
@@ -231,23 +225,19 @@ ul[data-type="taskList"] {
 ul[data-type="taskList"] li {
   display: flex;
   align-items: flex-start;
-  /* margin-bottom: 0.5rem; */
+  margin-bottom: 0.4rem;
 }
 
-ul[data-type="taskList"] li>label {
+ul[data-type="taskList"] li > label {
   flex: 0 0 auto;
-  margin-right: 0.5rem;
+  margin-right: 0.6rem;
   user-select: none;
-  margin-top: 0.2rem;
-}
-
-ul[data-type="taskList"] li>div {
-  flex: 1 1 auto;
+  margin-top: 0.15rem;
 }
 
 ul[data-type="taskList"] input[type="checkbox"] {
   cursor: pointer;
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1.1rem;
+  height: 1.1rem;
   accent-color: var(--accent-color);
 }

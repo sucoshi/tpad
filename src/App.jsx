@@ -87,7 +87,13 @@ const App = () => {
   const [backups, setBackups] = useState([]);
   const [saveHistory, setSaveHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem('tpad-theme') || 'dark');
   const historyRef = useRef(null);
+
+  useEffect(() => {
+    document.body.className = theme === 'light' ? 'light-theme' : '';
+    localStorage.setItem('tpad-theme', theme);
+  }, [theme]);
 
   const editor = useEditor({
     extensions: [
@@ -414,18 +420,35 @@ const App = () => {
             style={{
               background: 'transparent',
               border: 'none',
-              borderBottom: '1px solid rgba(255,255,255,0.2)',
-              color: '#f8fafc',
+              borderBottom: '1px solid var(--border-color)',
+              color: 'var(--text-color)',
               fontSize: '1rem',
               fontWeight: '600',
               padding: '0.2rem 0.5rem',
               outline: 'none',
-              width: '200px',
+              width: '180px',
             }}
           />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          {status && <span style={{ fontSize: '0.9rem', color: 'var(--accent-color)' }}>{status}</span>}
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            title={t('toggleTheme')}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '1.2rem',
+              color: 'var(--text-color)',
+              opacity: 0.8,
+              padding: '0.2rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            {theme === 'dark' ? '🌙' : '☀️'}
+          </button>
+          {status && <span style={{ fontSize: '0.85rem', color: 'var(--accent-color)' }}>{status}</span>}
           <button className="save-button" onClick={handleSave} title="Cmd+S or Ctrl+S to save">
             {t('save')}
           </button>

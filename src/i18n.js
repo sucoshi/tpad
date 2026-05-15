@@ -18,6 +18,7 @@ const translations = {
     doneClose: '完了！このタブを閉じても大丈夫です。',
     noHistory: '履歴はありません。',
     enterFilename: '保存するファイル名を入力してください:',
+    toggleTheme: 'テーマを切り替え',
   },
   en: {
     save: 'Save',
@@ -38,6 +39,7 @@ const translations = {
     doneClose: 'Done! You can close this tab.',
     noHistory: 'No history found.',
     enterFilename: 'Enter filename to save:',
+    toggleTheme: 'Toggle theme',
   }
 };
 
