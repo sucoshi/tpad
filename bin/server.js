@@ -201,11 +201,24 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
 
   app.post('/api/reveal', (req, res) => {
     const { filepath } = req.body;
+    console.error(`Attempting to reveal in Finder: ${filepath}`);
     try {
+      if (!filepath) {
+        return res.status(400).json({ success: false, error: 'No filepath provided' });
+      }
       // macOS specific command to reveal in Finder
-      exec(`open -R "${filepath.replace(/"/g, '\\"')}"`);
+      exec(`open -R "${filepath.replace(/"/g, '\\"')}"`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+        if (stderr) {
+          console.error(`stderr: ${stderr}`);
+        }
+      });
       res.json({ success: true });
     } catch (err) {
+      console.error(`Catch error: ${err.message}`);
       res.status(500).json({ success: false, error: err.message });
     }
   });
