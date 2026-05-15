@@ -20,6 +20,40 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
   const sessionId = Date.now().toString() + Math.floor(Math.random() * 1000).toString();
   const backupFile = path.join(backupDir, `backup-${sessionId}.md`);
 
+  const historyFile = path.join(os.homedir(), '.tpad-history.json');
+  const maxHistory = 20;
+
+  const readHistory = () => {
+    try {
+      if (fs.existsSync(historyFile)) {
+        return JSON.parse(fs.readFileSync(historyFile, 'utf8'));
+      }
+    } catch (err) {
+      console.error('Failed to read history:', err);
+    }
+    return [];
+  };
+
+  const writeHistory = (history) => {
+    try {
+      fs.writeFileSync(historyFile, JSON.stringify(history, null, 2), 'utf8');
+    } catch (err) {
+      console.error('Failed to write history:', err);
+    }
+  };
+
+  const addToHistory = (filePath) => {
+    if (!filePath) return;
+    let history = readHistory();
+    // Remove if exists to bring it to top
+    history = history.filter(p => p !== filePath);
+    history.unshift(filePath);
+    if (history.length > maxHistory) {
+      history = history.slice(0, maxHistory);
+    }
+    writeHistory(history);
+  };
+
   let currentContent = initialContent;
   let currentFilename = initialFilename;
 
@@ -31,7 +65,10 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
     const { content, filename } = req.body;
     try {
       if (onSave) {
-        await onSave(content, filename);
+        const savedPath = await onSave(content, filename);
+        if (savedPath) {
+          addToHistory(savedPath);
+        }
       }
       currentContent = content ?? currentContent;
       currentFilename = filename ?? currentFilename;
@@ -126,6 +163,40 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
         fs.unlinkSync(filePath);
       }
       res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // History endpoints
+  app.get('/api/history', (req, res) => {
+    res.json({ history: readHistory() });
+  });
+
+  app.delete('/api/history', (req, res) => {
+    try {
+      writeHistory([]);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  app.post('/api/load', (req, res) => {
+    const { filepath } = req.body;
+    try {
+      if (!fs.existsSync(filepath)) {
+        // If file no longer exists, remove it from history
+        let history = readHistory();
+        history = history.filter(p => p !== filepath);
+        writeHistory(history);
+        return res.status(404).json({ success: false, error: 'File not found on disk. Removed from history.' });
+      }
+      const content = fs.readFileSync(filepath, 'utf8');
+      const filename = path.basename(filepath);
+      currentContent = content;
+      currentFilename = filename;
+      res.json({ success: true, content, filename });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });
     }

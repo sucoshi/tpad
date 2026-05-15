@@ -12,6 +12,8 @@ const App = () => {
   const [status, setStatus] = useState('');
 
   const [backups, setBackups] = useState([]);
+  const [saveHistory, setSaveHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -50,6 +52,13 @@ const App = () => {
         }
       })
       .catch((err) => console.error('Failed to load backups:', err));
+
+    fetch('/api/history')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.history) setSaveHistory(data.history);
+      })
+      .catch(console.error);
   }, [editor]);
 
   // Auto-backup debounce
@@ -100,6 +109,40 @@ const App = () => {
     }
   };
 
+  const loadFromHistory = async (filepath) => {
+    try {
+      const res = await fetch('/api/load', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filepath })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        editor.commands.setContent(data.content);
+        setFilename(data.filename);
+        setShowHistory(false);
+      } else {
+        alert(data.error || 'Failed to load file');
+        // Refresh history as it might have been removed
+        const histRes = await fetch('/api/history');
+        const histData = await histRes.json();
+        if (histData.history) setSaveHistory(histData.history);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const clearHistory = async () => {
+    try {
+      await fetch('/api/history', { method: 'DELETE' });
+      setSaveHistory([]);
+      setShowHistory(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSave = useCallback(async () => {
     if (!editor) return;
 
@@ -125,6 +168,12 @@ const App = () => {
 
       setStatus('Saved!');
       setTimeout(() => setStatus(''), 2000);
+      
+      // Refresh history
+      const histRes = await fetch('/api/history');
+      const histData = await histRes.json();
+      if (histData.history) setSaveHistory(histData.history);
+
     } catch (err) {
       console.error(err);
       setStatus('Error saving');
@@ -162,8 +211,96 @@ const App = () => {
   return (
     <div className="editor-container">
       <header className="app-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontSize: '1.2rem' }}>📄</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            title="Recent Files"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '1.2rem',
+              color: 'var(--text-color)',
+              opacity: 0.8,
+              padding: '0.2rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            🕒
+          </button>
+          
+          {showHistory && (
+            <div style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              marginTop: '0.5rem',
+              background: '#1e293b',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '8px',
+              boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+              minWidth: '300px',
+              maxWidth: '500px',
+              maxHeight: '400px',
+              overflowY: 'auto',
+              zIndex: 100,
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{ padding: '0.5rem 1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: '600', fontSize: '0.9rem', color: '#94a3b8' }}>
+                Recent Files
+              </div>
+              {saveHistory.length === 0 ? (
+                <div style={{ padding: '1rem', color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', textAlign: 'center' }}>
+                  No history found.
+                </div>
+              ) : (
+                <>
+                  {saveHistory.map((filepath, i) => (
+                    <button
+                      key={i}
+                      onClick={() => loadFromHistory(filepath)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        borderBottom: '1px solid rgba(255,255,255,0.05)',
+                        padding: '0.8rem 1rem',
+                        color: '#f8fafc',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        wordBreak: 'break-all'
+                      }}
+                      onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.05)'}
+                      onMouseLeave={e => e.target.style.background = 'transparent'}
+                    >
+                      {filepath}
+                    </button>
+                  ))}
+                  <button
+                    onClick={clearHistory}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      padding: '0.8rem 1rem',
+                      color: '#ef4444',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                      fontWeight: '500'
+                    }}
+                    onMouseEnter={e => e.target.style.background = 'rgba(239,68,68,0.1)'}
+                    onMouseLeave={e => e.target.style.background = 'transparent'}
+                  >
+                    Clear History
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          <span style={{ fontSize: '1.2rem', marginLeft: '0.5rem' }}>📄</span>
           <input
             type="text"
             value={filename}

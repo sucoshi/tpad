@@ -32,16 +32,20 @@ const app = createApp({
   initialContent,
   initialFilename,
   onSave: async (content, filename) => {
+    let savedPath = null;
     if (targetFile) {
       fs.writeFileSync(targetFile, content, 'utf8');
       console.error(`Saved: ${targetFile}`);
+      savedPath = targetFile;
     } else if (filename) {
       const newTarget = path.resolve(process.cwd(), filename);
       fs.writeFileSync(newTarget, content, 'utf8');
       console.error(`Saved: ${newTarget}`);
+      savedPath = newTarget;
     } else {
       console.error(`Content saved (in-memory only, no file specified)`);
     }
+    return savedPath;
   },
   onExit: async (content) => {
     process.stdout.write(content);
