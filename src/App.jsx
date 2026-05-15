@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -87,6 +87,7 @@ const App = () => {
   const [backups, setBackups] = useState([]);
   const [saveHistory, setSaveHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const historyRef = useRef(null);
 
   const editor = useEditor({
     extensions: [
@@ -306,10 +307,28 @@ const App = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleSave]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (historyRef.current && !historyRef.current.contains(event.target)) {
+        setShowHistory(false);
+      }
+    };
+
+    if (showHistory) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showHistory]);
+
   return (
     <div className="editor-container">
       <header className="app-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
+        <div ref={historyRef} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
           <button
             onClick={() => setShowHistory(!showHistory)}
             title="Recent Files"
