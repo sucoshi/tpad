@@ -241,3 +241,110 @@ ul[data-type="taskList"] input[type="checkbox"] {
   height: 1.1rem;
   accent-color: var(--accent-color);
 }
+
+/* New UI Classes */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  min-width: 300px;
+  maxWidth: 500px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-header {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filename-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  outline: none;
+  width: 180px;
+  text-align: right;
+  transition: border-color 0.2s;
+}
+
+.filename-input:focus {
+  border-bottom-color: var(--accent-color);
+}
+
+.icon-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.icon-button:hover {
+  opacity: 1;
+  background: var(--hover-bg);
+}
+
+.backup-banner {
+  background: rgba(255, 165, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 165, 0, 0.2);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.backup-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 1.7rem;
+  font-size: 0.85rem;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  color: var(--text-color);
+  transition: background 0.2s;
+}
+
+.btn-ghost:hover {
+  background: var(--hover-bg);
+}
+
+.btn-danger-ghost {
+  color: #ef4444;
+}
+
+.btn-danger-ghost:hover {
+  background: rgba(239, 68, 68, 0.1);
+}

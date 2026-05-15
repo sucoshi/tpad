@@ -4,6 +4,8 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import open from 'open';
+import fs from 'fs';
+import path from 'path';
 import { createApp } from './server.js';
 
 const server = new Server(
@@ -55,7 +57,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
 
       const app = createApp({
         initialContent: markdown_content || '',
-        onSave: async () => {}, // mock success for save
+        onSave: async (content, filename) => {
+          if (!filename) return null;
+          try {
+            const savedPath = path.resolve(process.cwd(), filename);
+            fs.writeFileSync(savedPath, content, 'utf8');
+            return savedPath;
+          } catch (err) {
+            console.error('Failed to save from MCP session:', err);
+            return null;
+          }
+        },
         onExit: async (content) => {
           isDone = true;
           cleanup();
