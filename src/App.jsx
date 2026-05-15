@@ -158,7 +158,7 @@ const App = () => {
         </div>
       )}
 
-      <main>
+      <main className="editor-main">
         <EditorContent editor={editor} />
       </main>
     </div>
