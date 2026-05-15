@@ -11,6 +11,8 @@ const App = () => {
   const [filename, setFilename] = useState('');
   const [status, setStatus] = useState('');
 
+  const [backups, setBackups] = useState([]);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -26,8 +28,8 @@ const App = () => {
     content: '',
   });
 
+  // Fetch initial file content and backups
   useEffect(() => {
-    // Fetch initial file content
     fetch('/api/file')
       .then((res) => res.json())
       .then((data) => {
@@ -39,7 +41,64 @@ const App = () => {
         }
       })
       .catch((err) => console.error('Failed to load file:', err));
+
+    fetch('/api/backups')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.backups && data.backups.length > 0) {
+          setBackups(data.backups);
+        }
+      })
+      .catch((err) => console.error('Failed to load backups:', err));
   }, [editor]);
+
+  // Auto-backup debounce
+  useEffect(() => {
+    if (!editor) return;
+    
+    const handleUpdate = () => {
+      const content = editor.storage.markdown.getMarkdown();
+      fetch('/api/backup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+      }).catch(console.error);
+    };
+
+    let timeout;
+    const onUpdate = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(handleUpdate, 1000);
+    };
+
+    editor.on('update', onUpdate);
+    return () => {
+      editor.off('update', onUpdate);
+      clearTimeout(timeout);
+    };
+  }, [editor]);
+
+  const loadBackup = async (id) => {
+    try {
+      const res = await fetch(`/api/backup/${id}`);
+      const data = await res.json();
+      if (data.content && editor) {
+        editor.commands.setContent(data.content);
+        setBackups([]);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const deleteBackup = async (id) => {
+    try {
+      await fetch(`/api/backup/${id}`, { method: 'DELETE' });
+      setBackups(prev => prev.filter(b => b.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleSave = useCallback(async () => {
     if (!editor) return;
@@ -138,6 +197,42 @@ const App = () => {
           </button>
         </div>
       </header>
+
+      {backups.length > 0 && (
+        <div style={{
+          background: 'rgba(255, 165, 0, 0.1)',
+          borderBottom: '1px solid rgba(255, 165, 0, 0.3)',
+          padding: '0.5rem 1rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.5rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ffa500' }}>
+            <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+            <span style={{ fontWeight: '500', fontSize: '0.95rem' }}>
+              Unsaved backup(s) found from previous sessions.
+            </span>
+          </div>
+          {backups.map(b => (
+            <div key={b.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: '1.7rem', fontSize: '0.85rem' }}>
+              <span style={{ color: 'rgba(255,255,255,0.6)' }}>{new Date(b.date).toLocaleString()}</span>
+              <button 
+                onClick={() => loadBackup(b.id)}
+                style={{ background: 'transparent', border: '1px solid #ffa500', color: '#ffa500', padding: '0.2rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}
+              >
+                Restore
+              </button>
+              <button 
+                onClick={() => deleteBackup(b.id)}
+                style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.4)', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.8rem' }}
+              >
+                Discard
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       <EditorContent editor={editor} style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
     </div>
   );
