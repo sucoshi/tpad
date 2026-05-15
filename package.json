@@ -16,7 +16,10 @@
 		"bin"
 	],
 	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.29.0",
 		"@tiptap/extension-placeholder": "^3.23.4",
+		"@tiptap/extension-task-item": "^3.23.4",
+		"@tiptap/extension-task-list": "^3.23.4",
 		"@tiptap/react": "^3.23.4",
 		"@tiptap/starter-kit": "^3.23.4",
 		"cors": "^2.8.6",

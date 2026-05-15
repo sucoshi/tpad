@@ -4,6 +4,9 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Markdown } from 'tiptap-markdown';
 
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
+
 const App = () => {
   const [filename, setFilename] = useState('');
   const [status, setStatus] = useState('');
@@ -12,6 +15,10 @@ const App = () => {
     extensions: [
       StarterKit,
       Markdown,
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
       Placeholder.configure({
         placeholder: 'Write something amazing... (Markdown supported)',
       }),
@@ -53,7 +60,7 @@ const App = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content, filename: currentFilename }),
       });
-      
+
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || 'Failed to save');
 
@@ -64,6 +71,23 @@ const App = () => {
       setStatus('Error saving');
     }
   }, [editor, filename]);
+
+  const handleOutputAndClose = useCallback(async () => {
+    if (!editor) return;
+    setStatus('Sending to terminal...');
+    try {
+      const content = editor.storage.markdown.getMarkdown();
+      await fetch('/api/exit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+      });
+      setStatus('Done! You can close this tab.');
+    } catch (err) {
+      console.error(err);
+      setStatus('Error');
+    }
+  }, [editor]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -99,10 +123,18 @@ const App = () => {
             }}
           />
         </div>
-        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-          {status && <span style={{fontSize: '0.9rem', color: 'var(--accent-color)'}}>{status}</span>}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {status && <span style={{ fontSize: '0.9rem', color: 'var(--accent-color)' }}>{status}</span>}
           <button className="save-button" onClick={handleSave} title="Cmd+S or Ctrl+S to save">
             Save
+          </button>
+          <button 
+            className="save-button" 
+            onClick={handleOutputAndClose} 
+            title="Send output to terminal pipe and close"
+            style={{ background: 'transparent', border: '1px solid var(--accent-color)', color: 'var(--accent-color)' }}
+          >
+            Finish & Output
           </button>
         </div>
       </header>

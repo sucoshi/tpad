@@ -32,7 +32,7 @@ body {
   border-left: 1px solid var(--editor-border);
   border-right: 1px solid var(--editor-border);
   min-height: 100vh;
-  box-shadow: 0 0 40px rgba(0,0,0,0.3);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
 }
@@ -74,11 +74,27 @@ body {
 /* TipTap Editor Styles */
 .tiptap {
   outline: none;
-  padding: 3rem 4rem;
+  padding: 0 2rem 2rem;
+  margin: 0;
   font-size: 1.15rem;
-  line-height: 1.8;
+  line-height: 1.4;
   flex: 1;
 }
+
+/* エディタ内のブラウザ標準余白をすべてリセット */
+.tiptap p,
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap ul,
+.tiptap ol,
+.tiptap li,
+.tiptap blockquote,
+.tiptap pre {
+  margin: 0;
+  padding: 0;
+}
+
 
 .tiptap p.is-editor-empty:first-child::before {
   color: rgba(255, 255, 255, 0.3);
@@ -91,27 +107,48 @@ body {
 .tiptap h1 {
   font-size: 2.5em;
   font-weight: 700;
-  margin-top: 1.5em;
-  margin-bottom: 0.8em;
+  margin-top: 0.5em;
+  /* margin-bottom: 0.8em; */
   line-height: 1.2;
 }
 
 .tiptap h2 {
   font-size: 1.8em;
   font-weight: 600;
-  margin-top: 1.5em;
-  margin-bottom: 0.8em;
+  margin-top: 0.5em;
+  /* margin-bottom: 0.8em; */
 }
 
 .tiptap h3 {
   font-size: 1.4em;
   font-weight: 600;
-  margin-top: 1.2em;
-  margin-bottom: 0.5em;
+  margin-top: 0.2em;
+  /* margin-bottom: 0.5em; */
+}
+
+.tiptap h4 {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-top: 0.2em;
+  /* margin-bottom: 0.5em; */
+}
+
+.tiptap h5 {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-top: 0.2em;
+  /* margin-bottom: 0.5em; */
+}
+
+.tiptap h6 {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-top: 0.2em;
+  /* margin-bottom: 0.5em; */
 }
 
 .tiptap p {
-  margin-bottom: 1.2em;
+  /* margin-bottom: 1.2em; */
 }
 
 .tiptap strong {
@@ -134,9 +171,9 @@ body {
   padding: 1.5rem;
   border-radius: 8px;
   overflow-x: auto;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  /* margin-bottom: 1.5rem; */
 }
 
 .tiptap pre code {
@@ -155,32 +192,62 @@ body {
   font-style: italic;
   background: linear-gradient(to right, rgba(56, 189, 248, 0.05), transparent);
   padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  /* padding-bottom: 0.5rem; */
   border-radius: 0 8px 8px 0;
 }
 
 .tiptap ul {
   list-style-type: disc;
   padding-left: 1.5rem;
-  margin-bottom: 1.2em;
+  /* margin-bottom: 1.2em; */
 }
 
 .tiptap ol {
   list-style-type: decimal;
   padding-left: 1.5rem;
-  margin-bottom: 1.2em;
+  /* margin-bottom: 1.2em; */
 }
 
 .tiptap li {
-  margin-bottom: 0.5em;
+  /* margin-bottom: 0.5em; */
 }
 
-.tiptap li > p {
-  margin-bottom: 0.5em;
+.tiptap li>p {
+  /* margin-bottom: 0.5em; */
 }
 
 .tiptap hr {
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin: 2.5rem 0;
+  margin: 2.5rem 0 0;
+}
+
+/* Task List Styles */
+ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+}
+
+ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  /* margin-bottom: 0.5rem; */
+}
+
+ul[data-type="taskList"] li>label {
+  flex: 0 0 auto;
+  margin-right: 0.5rem;
+  user-select: none;
+  margin-top: 0.2rem;
+}
+
+ul[data-type="taskList"] li>div {
+  flex: 1 1 auto;
+}
+
+ul[data-type="taskList"] input[type="checkbox"] {
+  cursor: pointer;
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--accent-color);
 }
