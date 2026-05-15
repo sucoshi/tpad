@@ -233,7 +233,7 @@ const App = () => {
         </div>
       )}
 
-      <EditorContent editor={editor} style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+      <EditorContent editor={editor} />
     </div>
   );
 };

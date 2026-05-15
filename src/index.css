@@ -71,14 +71,14 @@ body {
   transform: translateY(0);
 }
 
-/* TipTap Editor Styles */
 .tiptap {
   outline: none;
-  padding: 0 2rem 2rem;
+  padding: 2rem;
   margin: 0;
   font-size: 1.15rem;
   line-height: 1.4;
-  flex: 1;
+  min-height: calc(100vh - 100px);
+  cursor: text;
 }
 
 /* エディタ内のブラウザ標準余白をすべてリセット */
