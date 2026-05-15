@@ -74,14 +74,7 @@ const App = () => {
     <div className="editor-container">
       <header className="app-header">
         <div ref={historyRef} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
-          <button
-            className="icon-button"
-            onClick={() => setShowHistory(!showHistory)}
-            title={t('recentFiles')}
-          >
-            🕒
-          </button>
-          
+
           {showHistory && (
             <div className="dropdown-menu">
               <div className="dropdown-header">{t('recentFiles')}</div>
@@ -92,10 +85,10 @@ const App = () => {
               ) : (
                 <>
                   {saveHistory.map((filepath) => (
-                    <HistoryItem 
-                      key={filepath} 
-                      filepath={filepath} 
-                      onLoad={loadFromHistory} 
+                    <HistoryItem
+                      key={filepath}
+                      filepath={filepath}
+                      onLoad={loadFromHistory}
                       onRemove={removeFromHistory}
                       onReveal={revealInFinder}
                     />
@@ -108,7 +101,6 @@ const App = () => {
             </div>
           )}
 
-          <span style={{ fontSize: '1.2rem', marginLeft: '0.5rem' }}>📄</span>
           <input
             className="filename-input"
             type="text"
@@ -116,7 +108,14 @@ const App = () => {
             onChange={(e) => setFilename(e.target.value)}
             placeholder={t('untitled')}
           />
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: '600', marginLeft: '0.1rem' }}>.md</span>
+
+          <button
+            className="icon-button"
+            onClick={() => setShowHistory(!showHistory)}
+            title={t('recentFiles')}
+          >
+            🕒
+          </button>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -129,8 +128,8 @@ const App = () => {
           </button>
           {status && <span style={{ fontSize: '0.85rem', color: 'var(--accent-color)', fontWeight: '500' }}>{status}</span>}
           <button className="save-button" onClick={handleSave}>{t('save')}</button>
-          <button 
-            className="save-button" 
+          <button
+            className="save-button"
             onClick={handleOutputAndClose}
             style={{ background: 'transparent', border: '1px solid var(--accent-color)', color: 'var(--accent-color)' }}
           >
@@ -159,7 +158,7 @@ const App = () => {
         </div>
       )}
 
-      <main style={{ flex: 1, overflowY: 'auto' }}>
+      <main>
         <EditorContent editor={editor} />
       </main>
     </div>

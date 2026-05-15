@@ -55,8 +55,6 @@ body {
   margin: 0 auto;
   width: 100%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   position: relative;
 }
 
@@ -206,7 +204,8 @@ body.light-theme .tiptap pre {
   border-radius: 0 4px 4px 0;
 }
 
-.tiptap ul, .tiptap ol {
+.tiptap ul,
+.tiptap ol {
   padding-left: 1.5rem;
 }
 
@@ -228,7 +227,7 @@ ul[data-type="taskList"] li {
   margin-bottom: 0.4rem;
 }
 
-ul[data-type="taskList"] li > label {
+ul[data-type="taskList"] li>label {
   flex: 0 0 auto;
   margin-right: 0.6rem;
   user-select: none;
@@ -251,7 +250,7 @@ ul[data-type="taskList"] input[type="checkbox"] {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   min-width: 300px;
   maxWidth: 500px;
   max-height: 400px;
@@ -281,7 +280,7 @@ ul[data-type="taskList"] input[type="checkbox"] {
   padding: 0.2rem 0.5rem;
   outline: none;
   width: 180px;
-  text-align: right;
+  text-align: left;
   transition: border-color 0.2s;
 }
 

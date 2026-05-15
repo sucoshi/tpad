@@ -9,7 +9,7 @@ const translations = {
     backupWarning: '前回のセッションの未保存バックアップが見つかりました。',
     restore: '復元',
     discard: '破棄',
-    placeholder: '素晴らしいアイデアをここに... (Markdown対応)',
+    placeholder: 'Markdownを入力...',
     untitled: '無題',
     saving: '保存中...',
     saved: '保存完了！',
