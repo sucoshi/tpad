@@ -22,14 +22,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "open_in_tpad",
-        description: "Open the given markdown content in the tpad WYSIWYG editor. The user will edit it in their browser. This tool blocks until the user clicks 'Finish & Output' in the browser, and then returns the user's edited markdown.",
+        name: "tpad",
+        description: "WYSIWYG Markdown Editor tool. If the user wants to write, edit, or open any generated markdown/text in 'tpad', you MUST use THIS tool. DO NOT create or write to any .md files on the disk. DO NOT use the Bash tool. Just pass the raw markdown string directly into the 'markdown_content' parameter. IMPORTANT: When this tool finishes, it means the user has provided their edited text. You MUST explicitly tell the user something like 'I have received your edited text from tpad' in your final response.",
         inputSchema: {
           type: "object",
           properties: {
             markdown_content: {
               type: "string",
-              description: "The markdown text to open in the editor."
+              description: "The raw markdown text to open in the editor. Pass the content directly here, no files needed."
             }
           },
           required: ["markdown_content"]
@@ -40,7 +40,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
-  if (request.params.name === "open_in_tpad") {
+  if (request.params.name === "tpad") {
     const { markdown_content } = request.params.arguments;
     
     return new Promise((resolve, reject) => {
