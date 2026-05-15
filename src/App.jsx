@@ -23,11 +23,11 @@ const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
         onClick={() => onLoad(filepath)}
         style={{
           flex: 1,
-          background: isHovered ? 'rgba(255,255,255,0.05)' : 'transparent',
+          background: isHovered ? 'var(--hover-bg)' : 'transparent',
           border: 'none',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          borderBottom: '1px solid var(--border-color)',
           padding: '0.8rem 2.5rem 0.8rem 1rem', // extra right padding for menu icon
-          color: '#f8fafc',
+          color: 'var(--text-color)',
           textAlign: 'left',
           cursor: 'pointer',
           fontSize: '0.9rem',
@@ -43,7 +43,7 @@ const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
           <button
             onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
             style={{
-              background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '1rem', fontWeight: 'bold'
+              background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '1rem', fontWeight: 'bold'
             }}
           >
             ⋮
@@ -51,15 +51,15 @@ const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
           {menuOpen && (
             <div style={{
               position: 'absolute', right: 0, top: '100%',
-              background: '#334155', borderRadius: '6px', padding: '0.2rem',
+              background: 'var(--card-bg)', borderRadius: '6px', padding: '0.2rem',
               boxShadow: '0 4px 12px rgba(0,0,0,0.4)', zIndex: 110,
               display: 'flex', flexDirection: 'column', minWidth: '130px',
-              border: '1px solid rgba(255,255,255,0.1)'
+              border: '1px solid var(--border-color)'
             }}>
               <button 
                 onClick={(e) => { e.stopPropagation(); onReveal(filepath); setMenuOpen(false); }}
-                style={{ background: 'transparent', border: 'none', color: '#f8fafc', padding: '0.5rem 0.8rem', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', borderRadius: '4px' }}
-                onMouseEnter={e => e.target.style.background='rgba(255,255,255,0.1)'}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-color)', padding: '0.5rem 0.8rem', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', borderRadius: '4px' }}
+                onMouseEnter={e => e.target.style.background='var(--hover-bg)'}
                 onMouseLeave={e => e.target.style.background='transparent'}
               >
                 {t('finderReveal')}
@@ -378,8 +378,8 @@ const App = () => {
               top: '100%',
               left: 0,
               marginTop: '0.5rem',
-              background: '#1e293b',
-              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--border-color)',
               borderRadius: '8px',
               boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
               minWidth: '300px',
@@ -390,11 +390,11 @@ const App = () => {
               display: 'flex',
               flexDirection: 'column'
             }}>
-              <div style={{ padding: '0.5rem 1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: '600', fontSize: '0.9rem', color: '#94a3b8' }}>
+              <div style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--border-color)', fontWeight: '600', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                 {t('recentFiles')}
               </div>
               {saveHistory.length === 0 ? (
-                <div style={{ padding: '1rem', color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', textAlign: 'center' }}>
+                <div style={{ padding: '1rem', color: 'var(--text-secondary)', opacity: 0.5, fontSize: '0.9rem', textAlign: 'center' }}>
                   {t('noHistory')}
                 </div>
               ) : (
