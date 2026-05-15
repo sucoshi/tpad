@@ -158,7 +158,7 @@ const App = () => {
         </div>
       )}
 
-      <main className="editor-main">
+      <main style={{ flex: 1, overflowY: 'auto' }}>
         <EditorContent editor={editor} />
       </main>
     </div>
