@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import os from 'os';
+import { exec } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +41,12 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
     } catch (err) {
       console.error('Failed to write history:', err);
     }
+  };
+
+  const removeFromHistory = (filePath) => {
+    let history = readHistory();
+    history = history.filter(p => p !== filePath);
+    writeHistory(history);
   };
 
   const addToHistory = (filePath) => {
@@ -176,6 +183,27 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
   app.delete('/api/history', (req, res) => {
     try {
       writeHistory([]);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  app.post('/api/history/remove', (req, res) => {
+    const { filepath } = req.body;
+    try {
+      removeFromHistory(filepath);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  app.post('/api/reveal', (req, res) => {
+    const { filepath } = req.body;
+    try {
+      // macOS specific command to reveal in Finder
+      exec(`open -R "${filepath.replace(/"/g, '\\"')}"`);
       res.json({ success: true });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });

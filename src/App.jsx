@@ -7,6 +7,78 @@ import { Markdown } from 'tiptap-markdown';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 
+const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const filename = filepath.split('/').pop().replace(/\.md$/, '');
+
+  return (
+    <div 
+      style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => { setIsHovered(false); setMenuOpen(false); }}
+    >
+      <button
+        onClick={() => onLoad(filepath)}
+        style={{
+          flex: 1,
+          background: isHovered ? 'rgba(255,255,255,0.05)' : 'transparent',
+          border: 'none',
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          padding: '0.8rem 2.5rem 0.8rem 1rem', // extra right padding for menu icon
+          color: '#f8fafc',
+          textAlign: 'left',
+          cursor: 'pointer',
+          fontSize: '0.9rem',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        {filename}
+      </button>
+      {isHovered && (
+        <div style={{ position: 'absolute', right: '0.5rem' }}>
+          <button
+            onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
+            style={{
+              background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '1rem', fontWeight: 'bold'
+            }}
+          >
+            ⋮
+          </button>
+          {menuOpen && (
+            <div style={{
+              position: 'absolute', right: 0, top: '100%',
+              background: '#334155', borderRadius: '6px', padding: '0.2rem',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.4)', zIndex: 110,
+              display: 'flex', flexDirection: 'column', minWidth: '130px',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }}>
+              <button 
+                onClick={(e) => { e.stopPropagation(); onReveal(filepath); setMenuOpen(false); }}
+                style={{ background: 'transparent', border: 'none', color: '#f8fafc', padding: '0.5rem 0.8rem', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', borderRadius: '4px' }}
+                onMouseEnter={e => e.target.style.background='rgba(255,255,255,0.1)'}
+                onMouseLeave={e => e.target.style.background='transparent'}
+              >
+                Finderで表示
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); onRemove(filepath); setMenuOpen(false); }}
+                style={{ background: 'transparent', border: 'none', color: '#ef4444', padding: '0.5rem 0.8rem', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', borderRadius: '4px' }}
+                onMouseEnter={e => e.target.style.background='rgba(239,68,68,0.1)'}
+                onMouseLeave={e => e.target.style.background='transparent'}
+              >
+                履歴から削除
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const App = () => {
   const [filename, setFilename] = useState('');
   const [status, setStatus] = useState('');
@@ -143,6 +215,31 @@ const App = () => {
     }
   };
 
+  const removeFromHistory = async (filepath) => {
+    try {
+      await fetch('/api/history/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filepath })
+      });
+      setSaveHistory(prev => prev.filter(p => p !== filepath));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const revealInFinder = async (filepath) => {
+    try {
+      await fetch('/api/reveal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filepath })
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSave = useCallback(async () => {
     if (!editor) return;
 
@@ -258,25 +355,13 @@ const App = () => {
               ) : (
                 <>
                   {saveHistory.map((filepath, i) => (
-                    <button
-                      key={i}
-                      onClick={() => loadFromHistory(filepath)}
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)',
-                        padding: '0.8rem 1rem',
-                        color: '#f8fafc',
-                        textAlign: 'left',
-                        cursor: 'pointer',
-                        fontSize: '0.9rem',
-                        wordBreak: 'break-all'
-                      }}
-                      onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.05)'}
-                      onMouseLeave={e => e.target.style.background = 'transparent'}
-                    >
-                      {filepath}
-                    </button>
+                    <HistoryItem 
+                      key={filepath} 
+                      filepath={filepath} 
+                      onLoad={loadFromHistory} 
+                      onRemove={removeFromHistory}
+                      onReveal={revealInFinder}
+                    />
                   ))}
                   <button
                     onClick={clearHistory}
