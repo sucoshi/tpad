@@ -138,7 +138,7 @@ const App = () => {
           editor.commands.setContent(data.content);
         }
         if (data.filename) {
-          setFilename(data.filename);
+          setFilename(data.filename.replace(/\.md$/, ''));
         }
       })
       .catch((err) => console.error('Failed to load file:', err));
@@ -218,7 +218,7 @@ const App = () => {
       const data = await res.json();
       if (res.ok && data.success) {
         editor.commands.setContent(data.content);
-        setFilename(data.filename);
+        setFilename(data.filename.replace(/\.md$/, ''));
         setShowHistory(false);
       } else {
         alert(data.error || 'Failed to load file');
@@ -281,10 +281,11 @@ const App = () => {
     setStatus(t('saving'));
     try {
       const content = editor.storage.markdown.getMarkdown();
+      const filenameWithExt = currentFilename.endsWith('.md') ? currentFilename : `${currentFilename}.md`;
       const res = await fetch('/api/file', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, filename: currentFilename }),
+        body: JSON.stringify({ content, filename: filenameWithExt }),
       });
 
       const result = await res.json();
@@ -446,8 +447,10 @@ const App = () => {
               padding: '0.2rem 0.5rem',
               outline: 'none',
               width: '180px',
+              textAlign: 'right'
             }}
           />
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: '600', marginLeft: '0.1rem' }}>.md</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button
