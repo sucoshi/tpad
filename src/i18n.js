@@ -1,0 +1,55 @@
+const translations = {
+  ja: {
+    save: '保存',
+    finishOutput: '完了して出力',
+    recentFiles: '最近のファイル',
+    historyClear: '履歴をクリア',
+    finderReveal: 'Finderで表示',
+    historyRemove: '履歴から削除',
+    backupWarning: '前回のセッションの未保存バックアップが見つかりました。',
+    restore: '復元',
+    discard: '破棄',
+    placeholder: '素晴らしいアイデアをここに... (Markdown対応)',
+    untitled: '無題.md',
+    saving: '保存中...',
+    saved: '保存完了！',
+    saveError: '保存エラー',
+    sending: 'ターミナルに送信中...',
+    doneClose: '完了！このタブを閉じても大丈夫です。',
+    noHistory: '履歴はありません。',
+    enterFilename: '保存するファイル名を入力してください:',
+  },
+  en: {
+    save: 'Save',
+    finishOutput: 'Finish & Output',
+    recentFiles: 'Recent Files',
+    historyClear: 'Clear History',
+    finderReveal: 'Reveal in Finder',
+    historyRemove: 'Remove from History',
+    backupWarning: 'Unsaved backup(s) found from previous sessions.',
+    restore: 'Restore',
+    discard: 'Discard',
+    placeholder: 'Write something amazing... (Markdown supported)',
+    untitled: 'Untitled.md',
+    saving: 'Saving...',
+    saved: 'Saved!',
+    saveError: 'Error saving',
+    sending: 'Sending to terminal...',
+    doneClose: 'Done! You can close this tab.',
+    noHistory: 'No history found.',
+    enterFilename: 'Enter filename to save:',
+  }
+};
+
+const getLanguage = () => {
+  const lang = navigator.language || navigator.userLanguage;
+  return lang.startsWith('ja') ? 'ja' : 'en';
+};
+
+const currentLang = getLanguage();
+
+export const t = (key) => {
+  return translations[currentLang][key] || translations['en'][key] || key;
+};
+
+export default translations;

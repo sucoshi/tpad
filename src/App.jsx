@@ -3,6 +3,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Markdown } from 'tiptap-markdown';
+import { t } from './i18n';
 
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
@@ -61,7 +62,7 @@ const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
                 onMouseEnter={e => e.target.style.background='rgba(255,255,255,0.1)'}
                 onMouseLeave={e => e.target.style.background='transparent'}
               >
-                Finderで表示
+                {t('finderReveal')}
               </button>
               <button 
                 onClick={(e) => { e.stopPropagation(); onRemove(filepath); setMenuOpen(false); }}
@@ -69,7 +70,7 @@ const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
                 onMouseEnter={e => e.target.style.background='rgba(239,68,68,0.1)'}
                 onMouseLeave={e => e.target.style.background='transparent'}
               >
-                履歴から削除
+                {t('historyRemove')}
               </button>
             </div>
           )}
@@ -96,7 +97,7 @@ const App = () => {
         nested: true,
       }),
       Placeholder.configure({
-        placeholder: 'Write something amazing... (Markdown supported)',
+        placeholder: t('placeholder'),
       }),
     ],
     content: '',
@@ -245,13 +246,13 @@ const App = () => {
 
     let currentFilename = filename;
     if (!currentFilename) {
-      const inputName = window.prompt('Enter filename to save:', 'Untitled.md');
+      const inputName = window.prompt(t('enterFilename'), t('untitled'));
       if (!inputName) return; // User cancelled
       currentFilename = inputName;
       setFilename(inputName);
     }
 
-    setStatus('Saving...');
+    setStatus(t('saving'));
     try {
       const content = editor.storage.markdown.getMarkdown();
       const res = await fetch('/api/file', {
@@ -261,9 +262,9 @@ const App = () => {
       });
 
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || 'Failed to save');
+      if (!res.ok) throw new Error(result.error || t('saveError'));
 
-      setStatus('Saved!');
+      setStatus(t('saved'));
       setTimeout(() => setStatus(''), 2000);
       
       // Refresh history
@@ -273,13 +274,13 @@ const App = () => {
 
     } catch (err) {
       console.error(err);
-      setStatus('Error saving');
+      setStatus(t('saveError'));
     }
   }, [editor, filename]);
 
   const handleOutputAndClose = useCallback(async () => {
     if (!editor) return;
-    setStatus('Sending to terminal...');
+    setStatus(t('sending'));
     try {
       const content = editor.storage.markdown.getMarkdown();
       await fetch('/api/exit', {
@@ -287,7 +288,7 @@ const App = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content }),
       });
-      setStatus('Done! You can close this tab.');
+      setStatus(t('doneClose'));
     } catch (err) {
       console.error(err);
       setStatus('Error');
@@ -346,11 +347,11 @@ const App = () => {
               flexDirection: 'column'
             }}>
               <div style={{ padding: '0.5rem 1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: '600', fontSize: '0.9rem', color: '#94a3b8' }}>
-                Recent Files
+                {t('recentFiles')}
               </div>
               {saveHistory.length === 0 ? (
                 <div style={{ padding: '1rem', color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', textAlign: 'center' }}>
-                  No history found.
+                  {t('noHistory')}
                 </div>
               ) : (
                 <>
@@ -378,7 +379,7 @@ const App = () => {
                     onMouseEnter={e => e.target.style.background = 'rgba(239,68,68,0.1)'}
                     onMouseLeave={e => e.target.style.background = 'transparent'}
                   >
-                    Clear History
+                    {t('historyClear')}
                   </button>
                 </>
               )}
@@ -390,7 +391,7 @@ const App = () => {
             type="text"
             value={filename}
             onChange={(e) => setFilename(e.target.value)}
-            placeholder="Untitled.md"
+            placeholder={t('untitled')}
             style={{
               background: 'transparent',
               border: 'none',
@@ -407,7 +408,7 @@ const App = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {status && <span style={{ fontSize: '0.9rem', color: 'var(--accent-color)' }}>{status}</span>}
           <button className="save-button" onClick={handleSave} title="Cmd+S or Ctrl+S to save">
-            Save
+            {t('save')}
           </button>
           <button 
             className="save-button" 
@@ -415,7 +416,7 @@ const App = () => {
             title="Send output to terminal pipe and close"
             style={{ background: 'transparent', border: '1px solid var(--accent-color)', color: 'var(--accent-color)' }}
           >
-            Finish & Output
+            {t('finishOutput')}
           </button>
         </div>
       </header>
@@ -432,7 +433,7 @@ const App = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ffa500' }}>
             <span style={{ fontSize: '1.2rem' }}>⚠️</span>
             <span style={{ fontWeight: '500', fontSize: '0.95rem' }}>
-              Unsaved backup(s) found from previous sessions.
+              {t('backupWarning')}
             </span>
           </div>
           {backups.map(b => (
@@ -442,13 +443,13 @@ const App = () => {
                 onClick={() => loadBackup(b.id)}
                 style={{ background: 'transparent', border: '1px solid #ffa500', color: '#ffa500', padding: '0.2rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}
               >
-                Restore
+                {t('restore')}
               </button>
               <button 
                 onClick={() => deleteBackup(b.id)}
                 style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.4)', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.8rem' }}
               >
-                Discard
+                {t('discard')}
               </button>
             </div>
           ))}
