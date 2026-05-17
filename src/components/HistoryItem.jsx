@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { t } from '../i18n';
+import { MoreVerticalIcon } from './Icons';
 
 const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -33,9 +34,9 @@ const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
           <button
             onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
             className="icon-button"
-            style={{ fontSize: '1rem', padding: '0.2rem 0.5rem' }}
+            style={{ padding: '0.2rem' }}
           >
-            ⋮
+            <MoreVerticalIcon size={16} />
           </button>
           {menuOpen && (
             <div className="dropdown-menu" style={{ right: 0, minWidth: '130px', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>

@@ -6,6 +6,7 @@ import { Markdown } from 'tiptap-markdown';
 import { t } from './i18n';
 import HistoryItem from './components/HistoryItem';
 import { useTpad } from './hooks/useTpad';
+import { ClockIcon, SunIcon, MoonIcon } from './components/Icons';
 
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
@@ -114,7 +115,7 @@ const App = () => {
             onClick={() => setShowHistory(!showHistory)}
             title={t('recentFiles')}
           >
-            🕒
+            <ClockIcon size={18} />
           </button>
         </div>
 
@@ -124,7 +125,7 @@ const App = () => {
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             title={t('toggleTheme')}
           >
-            {theme === 'dark' ? '🌙' : '☀️'}
+            {theme === 'dark' ? <MoonIcon size={18} /> : <SunIcon size={18} />}
           </button>
           {status && <span style={{ fontSize: '0.85rem', color: 'var(--accent-color)', fontWeight: '500' }}>{status}</span>}
           <button className="save-button" onClick={handleSave}>{t('save')}</button>
