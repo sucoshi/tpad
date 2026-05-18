@@ -532,10 +532,9 @@ ul[data-type="taskList"] input[type="checkbox"] {
   border-collapse: collapse;
   table-layout: fixed;
   width: 100%;
-  margin: 1.5rem 0;
+  margin: 0;
   overflow: hidden;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
+  position: relative;
   font-size: 0.95rem;
 }
 
@@ -584,19 +583,27 @@ body.light-theme .tiptap tr:nth-child(even) {
 
 .tiptap .column-resize-handle {
   background-color: var(--accent-color);
-  bottom: -2px;
+  bottom: 0;
   position: absolute;
   right: -2px;
   pointer-events: none;
-  top: -2px;
+  top: 0;
   width: 4px;
   z-index: 10;
+}
+
+/* Change cursor to col-resize during table column resizing */
+.tiptap.resize-cursor,
+.tiptap.resize-cursor * {
+  cursor: col-resize !important;
 }
 
 .table-wrapper {
   overflow-x: auto;
   margin: 1.5rem 0;
   border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
 }
 
 /* Floating Table Bubble Menu Styles */
