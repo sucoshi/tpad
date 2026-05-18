@@ -1,6 +1,6 @@
-# tpad 🍃
+# tpad
 
-> **tpad** is an ultra-premium, macOS Tahoe-style Markdown editor that bridges the gap between your terminal and the browser.
+ターミナルとブラウザを連携させるMarkdownエディタです。
 
 [English](#english) | [日本語](#日本語)
 
@@ -8,27 +8,27 @@
 
 ## 日本語
 
-### 🌟 特徴
+### 特徴
 
-* **macOS Tahoe風「フローティング・アイランド」UI**
-  * 画面上部にホバーする美しい3つのすりガラス（グラスモフィズム）製アイランド。
-  * スクロール時にテキストがアイランドの下を滑らかに潜り抜ける贅沢なレイアウト。
-* **ターミナルとのシームレスな統合**
-  * `tpad file.md` で即座にブラウザエディタを起動。
-  * `cat note.md | tpad` のように、標準入力（stdin）からテキストを直接流し込んで編集可能。
-  * 編集完了後、「完了して出力」をクリックすると、編集内容がターミナルの標準出力（stdout）へ即座に書き出され、プロセスが美しく終了します。
-* **極上のWYSIWYG Markdown編集**
-  * Tiptapを搭載し、テーブル、チェックリスト、マークダウン記法をリアルタイムにビジュアルレンダリング。
-* **独立した「ステータス・トースト」**
-  * 保存中・完了状態を、画面下部中央に浮かび上がる美しい独立したすりガラスのトーストで通知。高精細なCSSローディングスピナーやiOS準拠のステータスドットを搭載。
-* **ローカル自動バックアップ & 履歴機能**
-  * 万が一の切断でも安心な自動一時保存（バックアップ）と、最近開いたファイルのクイックアクセス履歴。
+* **macOSスタイルのフローティングUI**
+  * 画面上部に固定配置された3つのアイランド型ヘッダー。
+  * スクロール時に入力テキストがヘッダーの下を通過するレイアウト。
+* **ターミナルとの統合**
+  * `tpad file.md` でブラウザを起動し編集可能。
+  * `cat note.md | tpad` のように、標準入力（stdin）からテキストを流し込んで編集可能。
+  * 「完了して出力」ボタンのクリックにより、編集内容を標準出力（stdout）へ出力して終了。
+* **WYSIWYG Markdown編集**
+  * Tiptapを採用し、テーブル、タスクリスト、各種マークダウン記法をリアルタイムにビジュアル表示。
+* **ステータス表示**
+  * 保存中・完了状態を、画面下部中央のトースト通知（インジケーター付き）で表示。
+* **バックアップ & 履歴機能**
+  * 自動一時保存（バックアップ）および最近開いたファイルのアクセス履歴。
 
 ---
 
-### 📦 インストール方法
+### インストール方法
 
-知り合いやご自身の環境にインストールするには、ターミナルで以下のコマンドを実行します：
+ターミナルで以下のコマンドを実行し、グローバルにインストールします：
 
 ```bash
 npm install -g github:YOUR_GITHUB_USERNAME/tpad
@@ -38,49 +38,51 @@ npm install -g github:YOUR_GITHUB_USERNAME/tpad
 
 ---
 
-### 🚀 使い方
+### 使い方
 
 #### 1. 指定ファイルを開いて編集する
 ```bash
 tpad filename.md
 ```
-ブラウザが自動的に起動し、Tpadの極上UIで編集できます。「保存」または `Cmd + S` でローカルファイルにリアルタイム同期されます。
+ブラウザが起動しエディタが開きます。「保存」または `Cmd + S` で指定のローカルファイルに同期保存されます。
 
 #### 2. 標準入力から流し込んで編集する（パイプ処理）
 ```bash
 cat draft.md | tpad > final.md
 ```
-既存のテキストを流し込んで編集し、「完了して出力」を押すと、結果がそのまま次のコマンドやファイルに書き出されます。
+既存のテキストを標準入力から読み込んで編集し、「完了して出力」で結果を指定のファイルへ書き出します。
 
 #### 3. 編集結果をそのまま次のコマンドに繋ぐ
 ```bash
 tpad | pbcopy
 ```
-編集完了後、「完了して出力」を押すと、書いたテキストがそのままMacのクリップボードにコピーされます。
+編集完了後に「完了して出力」をクリックすると、作成したテキストがMacのクリップボードにコピーされます。
 
 ---
 
 ## English
 
-### 🌟 Features
+A Markdown editor designed to bridge the terminal and the browser.
 
-* **macOS Tahoe "Floating Islands" UI**
-  * Three gorgeous glassmorphic (frosted glass) islands hovering gracefully at the top of the viewport.
-  * Premium layout where editor text slides smoothly underneath the hovering capsules during scroll.
-* **Seamless Terminal Integration**
-  * Launch your browser-based editor instantly using `tpad file.md`.
-  * Support for standard input (stdin) piping: `cat note.md | tpad`.
-  * Click **Finish & Output** to write your changes directly back to terminal standard output (stdout) and cleanly close the session.
-* **State-of-the-Art WYSIWYG Editor**
-  * Powered by Tiptap. Visually formats tables, checklists, and standard markdown elements in real-time.
-* **Dynamic iOS-Style Status Toast**
-  * Status messages float elegantly at the bottom center. Built with dynamic micro CSS spinners, iOS-green success glow-dots, and error indicators.
-* **Local Resiliency**
-  * Automatic local backups and instant file access history.
+### Features
+
+* **macOS-Style Floating UI**
+  * Three hovering header islands positioned at the top of the viewport.
+  * Text content scrolls behind the fixed header islands.
+* **Terminal Integration**
+  * Open and edit files with `tpad file.md`.
+  * Supports piping text via standard input (e.g., `cat note.md | tpad`).
+  * Click "Finish & Output" to write content to standard output (stdout) and close the process.
+* **WYSIWYG Markdown Editing**
+  * Powered by Tiptap, providing real-time rendering of tables, task lists, and markdown formats.
+* **Status Toast**
+  * Displays saving and output status in a floating toast at the bottom center.
+* **Backups & History**
+  * Automatic session backups and quick access history for recently opened files.
 
 ---
 
-### 📦 Installation
+### Installation
 
 To install `tpad` globally, run:
 
@@ -92,13 +94,13 @@ npm install -g github:YOUR_GITHUB_USERNAME/tpad
 
 ---
 
-### 🚀 Usage
+### Usage
 
 #### 1. Edit a Specific File
 ```bash
 tpad filename.md
 ```
-Automatically opens Tpad in your default browser. Pressing **Save** or `Cmd + S` syncs directly back to your local file.
+Automatically opens Tpad in your default browser. Pressing **Save** or `Cmd + S` syncs directly back to the specified local file.
 
 #### 2. Pipe Draft Content (Stdin / Stdout)
 ```bash
@@ -110,10 +112,10 @@ Edit piped text instantly. Clicking **Finish & Output** pipes the final Markdown
 ```bash
 tpad | pbcopy
 ```
-Edit your text in the browser, and upon clicking **Finish & Output**, the formatted Markdown is copied straight to your Mac clipboard!
+Edit your text in the browser, and upon clicking **Finish & Output**, the formatted Markdown is copied straight to your Mac clipboard.
 
 ---
 
-## 📄 License
+## License
 
 MIT © [YOUR_NAME](https://github.com/YOUR_GITHUB_USERNAME)
