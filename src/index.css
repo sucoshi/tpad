@@ -119,6 +119,10 @@ body.light-theme .island {
   padding: 4px 12px;
 }
 
+.island-table {
+  padding: 4px;
+}
+
 .island-tools {
   gap: 0.25rem;
   position: relative;

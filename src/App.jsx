@@ -94,7 +94,18 @@ const App = () => {
 
         {/* Right Side Groups */}
         <div className="header-right-groups">
-          {/* Tools Island (Right 1) */}
+          {/* Table Island */}
+          <div className="island island-table">
+            <button
+              className="icon-button-minimal"
+              onClick={() => editor && editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+              title={t('insertTable')}
+            >
+              <TableIcon size={14} />
+            </button>
+          </div>
+
+          {/* Tools Island */}
           <div ref={historyRef} className="island island-tools">
             <button
               className="icon-button-minimal"
@@ -102,13 +113,6 @@ const App = () => {
               title={t('recentFiles')}
             >
               <ClockIcon size={14} />
-            </button>
-            <button
-              className="icon-button-minimal"
-              onClick={() => editor && editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
-              title={t('insertTable')}
-            >
-              <TableIcon size={14} />
             </button>
             <button
               className="icon-button-minimal"
@@ -153,10 +157,10 @@ const App = () => {
             )}
           </div>
 
-          {/* Actions Island (Right 2) */}
+          {/* Actions Island */}
           <div className="island island-actions">
-            <button className="btn-save-pill" onClick={handleSave}>{t('save')}</button>
             <button className="btn-save-pill-secondary" onClick={handleOutputAndClose}>{t('finishOutput')}</button>
+            <button className="btn-save-pill" onClick={handleSave}>{t('save')}</button>
           </div>
         </div>
       </header>
