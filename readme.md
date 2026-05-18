@@ -8,19 +8,6 @@
 
 ## 日本語
 
-### 特徴
-
-* **ターミナルとの統合**
-  * `tpad file.md` でブラウザを起動し編集可能。
-  * `cat note.md | tpad` のように、標準入力（stdin）からテキストを流し込んで編集可能。
-  * 「完了して出力」ボタンのクリックにより、編集内容を標準出力（stdout）へ出力して終了。
-* **WYSIWYG Markdown編集**
-  * Tiptapを採用し、テーブル、タスクリスト、各種マークダウン記法をリアルタイムにビジュアル表示。
-* **ステータス表示**
-  * 保存中・完了状態を、画面下部中央のトースト通知（インジケーター付き）で表示。
-* **バックアップ & 履歴機能**
-  * 自動一時保存（バックアップ）および最近開いたファイルのアクセス履歴。
-
 ---
 
 ### インストール方法
@@ -97,19 +84,6 @@ Tpadは Model Context Protocol (MCP) に対応しています。Claude CLIなど
 
 A Markdown editor designed to bridge the terminal and the browser.
 
-### Features
-
-* **Terminal Integration**
-  * Open and edit files with `tpad file.md`.
-  * Supports piping text via standard input (e.g., `cat note.md | tpad`).
-  * Click "Finish & Output" to write content to standard output (stdout) and close the process.
-* **WYSIWYG Markdown Editing**
-  * Powered by Tiptap, providing real-time rendering of tables, task lists, and markdown formats.
-* **Status Toast**
-  * Displays saving and output status in a floating toast at the bottom center.
-* **Backups & History**
-  * Automatic session backups and quick access history for recently opened files.
-
 ---
 
 ### Installation
@@ -184,4 +158,4 @@ Tpad features a built-in Model Context Protocol (MCP) server. By registering Tpa
 
 ## License
 
-MIT © [YOUR_NAME](https://github.com/YOUR_GITHUB_USERNAME)
+MIT © [sucoshi](https://github.com/sucoshi)
