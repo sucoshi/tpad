@@ -102,3 +102,157 @@ export const TableIcon = ({ size = 18, ...props }) => (
   </svg>
 );
 
+export const AddColumnLeftIcon = ({ size = 18, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect width="12" height="18" x="9" y="3" rx="1.5" />
+    <path d="M9 9h12" />
+    <path d="M9 15h12" />
+    <path d="M15 3v18" />
+    <path d="M1 12h5" />
+    <path d="M3.5 9.5v5" />
+  </svg>
+);
+
+export const AddColumnRightIcon = ({ size = 18, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect width="12" height="18" x="3" y="3" rx="1.5" />
+    <path d="M3 9h12" />
+    <path d="M3 15h12" />
+    <path d="M9 3v18" />
+    <path d="M18 12h5" />
+    <path d="M20.5 9.5v5" />
+  </svg>
+);
+
+export const DeleteColumnIcon = ({ size = 18, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect width="12" height="18" x="3" y="3" rx="1.5" />
+    <path d="M3 9h12" />
+    <path d="M3 15h12" />
+    <path d="M9 3v18" />
+    <path d="M18 9.5l5 5" />
+    <path d="M23 9.5l-5 5" />
+  </svg>
+);
+
+export const AddRowAboveIcon = ({ size = 18, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect width="18" height="12" x="3" y="9" rx="1.5" />
+    <path d="M3 15h18" />
+    <path d="M9 9v12" />
+    <path d="M15 9v12" />
+    <path d="M12 1v5" />
+    <path d="M9.5 3.5h5" />
+  </svg>
+);
+
+export const AddRowBelowIcon = ({ size = 18, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect width="18" height="12" x="3" y="3" rx="1.5" />
+    <path d="M3 9h18" />
+    <path d="M9 3v12" />
+    <path d="M15 3v12" />
+    <path d="M12 18v5" />
+    <path d="M9.5 20.5h5" />
+  </svg>
+);
+
+export const DeleteRowIcon = ({ size = 18, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect width="18" height="12" x="3" y="3" rx="1.5" />
+    <path d="M3 9h18" />
+    <path d="M9 3v12" />
+    <path d="M15 3v12" />
+    <path d="M9.5 18l5 5" />
+    <path d="M14.5 18l-5 5" />
+  </svg>
+);
+
+export const TrashIcon = ({ size = 18, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M3 6h18" />
+    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+    <line x1="10" y1="11" x2="10" y2="17" />
+    <line x1="14" y1="11" x2="14" y2="17" />
+  </svg>
+);
+
+

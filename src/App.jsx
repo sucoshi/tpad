@@ -6,7 +6,7 @@ import { Markdown } from 'tiptap-markdown';
 import { t } from './i18n';
 import HistoryItem from './components/HistoryItem';
 import { useTpad } from './hooks/useTpad';
-import { ClockIcon, SunIcon, MoonIcon, TableIcon } from './components/Icons';
+import { ClockIcon, SunIcon, MoonIcon, TableIcon, AddColumnLeftIcon, AddColumnRightIcon, DeleteColumnIcon, AddRowAboveIcon, AddRowBelowIcon, DeleteRowIcon, TrashIcon } from './components/Icons';
 
 import { BubbleMenu } from '@tiptap/react/menus';
 import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table';
@@ -181,27 +181,28 @@ const App = () => {
           >
             <div className="table-bubble-menu">
               <button onClick={() => editor.chain().focus().addColumnBefore().run()} title={t('addColumnBefore')}>
-                ← 📊
+                <AddColumnLeftIcon size={14} />
               </button>
               <button onClick={() => editor.chain().focus().addColumnAfter().run()} title={t('addColumnAfter')}>
-                📊 →
+                <AddColumnRightIcon size={14} />
               </button>
-              <button onClick={() => editor.chain().focus().deleteColumn().run()} title={t('deleteColumn')}>
-                ✕ 📊
+              <button onClick={() => editor.chain().focus().deleteColumn().run()} className="btn-danger" title={t('deleteColumn')}>
+                <DeleteColumnIcon size={14} />
               </button>
               <span style={{ width: '1px', background: 'var(--border-color)', margin: '0.2rem 0.1rem' }} />
               <button onClick={() => editor.chain().focus().addRowAbove().run()} title={t('addRowAbove')}>
-                ↑ ➖
+                <AddRowAboveIcon size={14} />
               </button>
               <button onClick={() => editor.chain().focus().addRowBelow().run()} title={t('addRowBelow')}>
-                ➖ ↓
+                <AddRowBelowIcon size={14} />
               </button>
-              <button onClick={() => editor.chain().focus().deleteRow().run()} title={t('deleteRow')}>
-                ✕ ➖
+              <button onClick={() => editor.chain().focus().deleteRow().run()} className="btn-danger" title={t('deleteRow')}>
+                <DeleteRowIcon size={14} />
               </button>
               <span style={{ width: '1px', background: 'var(--border-color)', margin: '0.2rem 0.1rem' }} />
               <button onClick={() => editor.chain().focus().deleteTable().run()} className="btn-danger" title={t('deleteTable')}>
-                🗑️ {t('deleteTable')}
+                <TrashIcon size={14} />
+                <span>{t('deleteTable')}</span>
               </button>
             </div>
           </BubbleMenu>
