@@ -61,14 +61,14 @@ body {
 }
 
 .app-header-floating {
-  position: absolute;           /* Floating statically relative to editor-container */
+  position: fixed;              /* Pinned exactly to the viewport to stay stationary */
   top: 14px;
   left: 0;
   right: 0;
   z-index: 100;
   width: calc(100% - 24px);
   max-width: 820px;
-  margin: 0 auto;
+  margin: 0 auto;               /* Perfectly center the fixed header in the viewport */
   display: flex;
   justify-content: space-between;
   align-items: center;
