@@ -583,11 +583,11 @@ body.light-theme .tiptap tr:nth-child(even) {
 
 .tiptap .column-resize-handle {
   background-color: var(--accent-color);
-  bottom: 0;
+  bottom: -2px;
   position: absolute;
   right: -2px;
   pointer-events: none;
-  top: 0;
+  top: -2px;
   width: 4px;
   z-index: 10;
 }
