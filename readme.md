@@ -1,6 +1,7 @@
 # tpad
 
 ターミナルとブラウザを連携させるMarkdownエディタです。
+🛠️ Built with AI (Vibe Coding)
 
 [English](#english) | [日本語](#日本語)
 
