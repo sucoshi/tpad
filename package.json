@@ -1,6 +1,6 @@
 {
-	"name": "tpad",
-	"version": "0.0.0",
+	"name": "@sucoshi/tpad",
+	"version": "0.1.0",
 	"license": "MIT",
 	"bin": {
 		"tpad": "bin/cli.js",

@@ -16,7 +16,7 @@
 ターミナルで以下のコマンドを実行し、グローバルにインストールします：
 
 ```bash
-npm install -g github:sucoshi/tpad
+npm install -g @sucoshi/tpad
 ```
 
 ---
@@ -55,7 +55,7 @@ Tpadは Model Context Protocol (MCP) に対応しています。Claude CLIなど
       "args": [
         "-y",
         "--package",
-        "github:sucoshi/tpad",
+        "@sucoshi/tpad",
         "tpad-mcp"
       ]
     }
@@ -89,7 +89,7 @@ A Markdown editor designed to bridge the terminal and the browser.
 To install `tpad` globally, run:
 
 ```bash
-npm install -g github:sucoshi/tpad
+npm install -g @sucoshi/tpad
 ```
 
 ---
@@ -128,7 +128,7 @@ Tpad features a built-in Model Context Protocol (MCP) server. By registering Tpa
       "args": [
         "-y",
         "--package",
-        "github:sucoshi/tpad",
+        "@sucoshi/tpad",
         "tpad-mcp"
       ]
     }
