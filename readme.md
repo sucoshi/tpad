@@ -16,10 +16,8 @@
 ターミナルで以下のコマンドを実行し、グローバルにインストールします：
 
 ```bash
-npm install -g github:YOUR_GITHUB_USERNAME/tpad
+npm install -g github:sucoshi/tpad
 ```
-
-*※ `YOUR_GITHUB_USERNAME` はご自身のGitHubユーザー名に置き換えてください。*
 
 ---
 
@@ -57,14 +55,13 @@ Tpadは Model Context Protocol (MCP) に対応しています。Claude CLIなど
       "args": [
         "-y",
         "--package",
-        "github:YOUR_GITHUB_USERNAME/tpad",
+        "github:sucoshi/tpad",
         "tpad-mcp"
       ]
     }
   }
 }
 ```
-*※ `YOUR_GITHUB_USERNAME` はご自身のGitHubユーザー名に置き換えてください。*
 *※ グローバルインストール済みの場合は、`"command": "tpad-mcp"` の指定のみで動作します。*
 
 ##### 使い方・動作の流れ
@@ -92,10 +89,8 @@ A Markdown editor designed to bridge the terminal and the browser.
 To install `tpad` globally, run:
 
 ```bash
-npm install -g github:YOUR_GITHUB_USERNAME/tpad
+npm install -g github:sucoshi/tpad
 ```
-
-*Replace `YOUR_GITHUB_USERNAME` with your actual GitHub username.*
 
 ---
 
@@ -133,14 +128,13 @@ Tpad features a built-in Model Context Protocol (MCP) server. By registering Tpa
       "args": [
         "-y",
         "--package",
-        "github:YOUR_GITHUB_USERNAME/tpad",
+        "github:sucoshi/tpad",
         "tpad-mcp"
       ]
     }
   }
 }
 ```
-*Replace `YOUR_GITHUB_USERNAME` with your actual GitHub username.*
 *If installed globally, you can simplify the command to `"command": "tpad-mcp"`.*
 
 ##### How It Works
