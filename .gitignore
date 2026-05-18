@@ -2,7 +2,7 @@
 node_modules/
 
 # Production builds
-dist/
+# (dist is committed directly for seamless GitHub installation)
 
 # OS files
 .DS_Store
