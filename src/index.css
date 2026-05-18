@@ -1,29 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Dark Theme (Default) */
-  --bg-color: #0f172a;
-  --text-color: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --accent-color: #38bdf8;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --header-bg: rgba(15, 23, 42, 0.8);
-  --hover-bg: rgba(255, 255, 255, 0.05);
-  --card-bg: #1e293b;
-  --code-bg: rgba(255, 255, 255, 0.1);
+  /* Dark Theme (Default) - Apple Human Interface Guidelines Specifications */
+  --bg-color: #000000;                     /* System Background (Primary) */
+  --card-bg: #1c1c1e;                      /* System Background (Secondary) */
+  --header-bg: rgba(28, 28, 30, 0.85);     /* Translucent Secondary Background */
+  --text-color: #ffffff;                   /* Label (Primary) */
+  --text-secondary: rgba(235, 235, 245, 0.6); /* Secondary Label */
+  --accent-color: #0a84ff;                 /* System Blue */
+  --border-color: rgba(84, 84, 88, 0.36);   /* System Separator */
+  --hover-bg: rgba(120, 120, 128, 0.24);    /* System Gray 5 with transparency */
+  --code-bg: rgba(120, 120, 128, 0.18);     /* Opaque system code block background */
 }
 
 body.light-theme {
-  /* Light Theme */
-  --bg-color: #ffffff;
-  --text-color: #1e293b;
-  --text-secondary: #64748b;
-  --accent-color: #0284c7;
-  --border-color: rgba(0, 0, 0, 0.08);
-  --header-bg: rgba(255, 255, 255, 0.8);
-  --hover-bg: rgba(0, 0, 0, 0.03);
-  --card-bg: #f8fafc;
-  --code-bg: rgba(0, 0, 0, 0.05);
+  /* Light Theme - Apple Human Interface Guidelines Specifications */
+  --bg-color: #ffffff;                     /* System Background (Primary) */
+  --card-bg: #f2f2f7;                      /* System Background (Secondary) */
+  --header-bg: rgba(242, 242, 247, 0.85);   /* Translucent Secondary Background */
+  --text-color: #000000;                   /* Label (Primary) */
+  --text-secondary: rgba(60, 60, 67, 0.6);  /* Secondary Label */
+  --accent-color: #007aff;                 /* System Blue */
+  --border-color: rgba(60, 60, 67, 0.18);   /* System Separator */
+  --hover-bg: rgba(120, 120, 128, 0.12);    /* System Gray 5 with transparency */
+  --code-bg: rgba(120, 120, 128, 0.08);     /* Opaque system code block background */
 }
 
 * {
