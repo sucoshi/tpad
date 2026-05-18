@@ -48,6 +48,7 @@ const App = () => {
 
   const {
     filename, setFilename, status, backups, saveHistory, showHistory, setShowHistory, theme, setTheme,
+    language, toggleLanguage,
     loadBackup, deleteBackup, loadFromHistory, clearHistory, removeFromHistory, revealInFinder,
     handleSave, handleOutputAndClose
   } = useTpad(editor);
@@ -115,6 +116,14 @@ const App = () => {
               title={t('toggleTheme')}
             >
               {theme === 'dark' ? <MoonIcon size={14} /> : <SunIcon size={14} />}
+            </button>
+            <button
+              className="icon-button-minimal"
+              onClick={toggleLanguage}
+              title={language === 'ja' ? 'Switch to English' : '日本語に切り替え'}
+              style={{ fontSize: '10px', fontWeight: '800', minWidth: '24px', height: '24px', justifyContent: 'center' }}
+            >
+              {language === 'ja' ? 'JA' : 'EN'}
             </button>
 
             {showHistory && (

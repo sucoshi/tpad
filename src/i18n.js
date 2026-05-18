@@ -60,11 +60,20 @@ const translations = {
 };
 
 const getLanguage = () => {
-  const lang = navigator.language || navigator.userLanguage;
+  const saved = localStorage.getItem('tpad-lang');
+  if (saved) return saved;
+  const lang = navigator.language || navigator.userLanguage || 'en';
   return lang.startsWith('ja') ? 'ja' : 'en';
 };
 
-const currentLang = getLanguage();
+let currentLang = getLanguage();
+
+export const getCurrentLanguage = () => currentLang;
+
+export const setLanguage = (lang) => {
+  currentLang = lang;
+  localStorage.setItem('tpad-lang', lang);
+};
 
 export const t = (key) => {
   return translations[currentLang][key] || translations['en'][key] || key;

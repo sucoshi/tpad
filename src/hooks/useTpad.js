@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { t } from '../i18n';
+import { t, getCurrentLanguage, setLanguage } from '../i18n';
 
 export const useTpad = (editor) => {
   const [filename, setFilename] = useState('');
@@ -8,6 +8,13 @@ export const useTpad = (editor) => {
   const [saveHistory, setSaveHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('tpad-theme') || 'dark');
+  const [language, setLanguageState] = useState(getCurrentLanguage());
+
+  const toggleLanguage = () => {
+    const nextLang = language === 'ja' ? 'en' : 'ja';
+    setLanguage(nextLang);
+    setLanguageState(nextLang);
+  };
 
   // Theme Sync
   useEffect(() => {
@@ -209,6 +216,7 @@ export const useTpad = (editor) => {
     saveHistory, setSaveHistory,
     showHistory, setShowHistory,
     theme, setTheme,
+    language, toggleLanguage,
     loadBackup, deleteBackup,
     loadFromHistory, clearHistory, removeFromHistory, revealInFinder,
     handleSave, handleOutputAndClose
