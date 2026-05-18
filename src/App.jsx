@@ -6,8 +6,10 @@ import { Markdown } from 'tiptap-markdown';
 import { t } from './i18n';
 import HistoryItem from './components/HistoryItem';
 import { useTpad } from './hooks/useTpad';
-import { ClockIcon, SunIcon, MoonIcon } from './components/Icons';
+import { ClockIcon, SunIcon, MoonIcon, TableIcon } from './components/Icons';
 
+import { BubbleMenu } from '@tiptap/react/menus';
+import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 
@@ -21,6 +23,10 @@ const App = () => {
       TaskList,
       TaskItem.configure({ nested: true }),
       Placeholder.configure({ placeholder: t('placeholder') }),
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableHeader,
+      TableCell,
     ],
     editorProps: {
       handlePaste: (view, event) => {
@@ -122,6 +128,13 @@ const App = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button
             className="icon-button"
+            onClick={() => editor && editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+            title={t('insertTable')}
+          >
+            <TableIcon size={18} />
+          </button>
+          <button
+            className="icon-button"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             title={t('toggleTheme')}
           >
@@ -160,6 +173,39 @@ const App = () => {
       )}
 
       <main style={{ flex: 1, overflowY: 'auto' }}>
+        {editor && (
+          <BubbleMenu
+            editor={editor}
+            tippyOptions={{ duration: 150 }}
+            shouldShow={({ editor }) => editor.isActive('table')}
+          >
+            <div className="table-bubble-menu">
+              <button onClick={() => editor.chain().focus().addColumnBefore().run()} title={t('addColumnBefore')}>
+                ← 📊
+              </button>
+              <button onClick={() => editor.chain().focus().addColumnAfter().run()} title={t('addColumnAfter')}>
+                📊 →
+              </button>
+              <button onClick={() => editor.chain().focus().deleteColumn().run()} title={t('deleteColumn')}>
+                ✕ 📊
+              </button>
+              <span style={{ width: '1px', background: 'var(--border-color)', margin: '0.2rem 0.1rem' }} />
+              <button onClick={() => editor.chain().focus().addRowAbove().run()} title={t('addRowAbove')}>
+                ↑ ➖
+              </button>
+              <button onClick={() => editor.chain().focus().addRowBelow().run()} title={t('addRowBelow')}>
+                ➖ ↓
+              </button>
+              <button onClick={() => editor.chain().focus().deleteRow().run()} title={t('deleteRow')}>
+                ✕ ➖
+              </button>
+              <span style={{ width: '1px', background: 'var(--border-color)', margin: '0.2rem 0.1rem' }} />
+              <button onClick={() => editor.chain().focus().deleteTable().run()} className="btn-danger" title={t('deleteTable')}>
+                🗑️ {t('deleteTable')}
+              </button>
+            </div>
+          </BubbleMenu>
+        )}
         <EditorContent editor={editor} />
       </main>
     </div>

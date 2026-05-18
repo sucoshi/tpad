@@ -348,3 +348,114 @@ ul[data-type="taskList"] input[type="checkbox"] {
 .btn-danger-ghost:hover {
   background: rgba(239, 68, 68, 0.1);
 }
+
+/* Tiptap Tables Styles - Elegant Apple inspired grid */
+.tiptap table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 1.5rem 0;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 0.95rem;
+}
+
+.tiptap th,
+.tiptap td {
+  min-width: 1em;
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.tiptap th {
+  font-weight: 600;
+  text-align: left;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.tiptap td {
+  color: var(--text-color);
+}
+
+.tiptap tr:nth-child(even) {
+  background-color: rgba(120, 120, 128, 0.03); /* subtle apple zebra stripe */
+}
+
+body.light-theme .tiptap tr:nth-child(even) {
+  background-color: rgba(120, 120, 128, 0.02);
+}
+
+.tiptap tr:hover {
+  background-color: var(--hover-bg); /* Highlight row on hover */
+}
+
+.tiptap .selectedCell:after {
+  background: rgba(10, 132, 255, 0.1); /* light blue selection overlay */
+  content: "";
+  left: 0; right: 0; top: 0; bottom: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.tiptap .column-resize-handle {
+  background-color: var(--accent-color);
+  bottom: -2px;
+  position: absolute;
+  right: -2px;
+  pointer-events: none;
+  top: -2px;
+  width: 4px;
+  z-index: 10;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+
+/* Floating Table Bubble Menu Styles */
+.table-bubble-menu {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  display: flex;
+  padding: 0.25rem;
+  gap: 0.15rem;
+  z-index: 9999;
+}
+
+.table-bubble-menu button {
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.15s ease;
+}
+
+.table-bubble-menu button:hover {
+  background: var(--hover-bg);
+}
+
+.table-bubble-menu button.btn-danger {
+  color: #ef4444;
+}
+
+.table-bubble-menu button.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
