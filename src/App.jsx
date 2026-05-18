@@ -79,78 +79,6 @@ const App = () => {
 
   return (
     <div className="editor-container">
-      <header className="app-header">
-        <div ref={historyRef} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
-
-          {showHistory && (
-            <div className="dropdown-menu">
-              <div className="dropdown-header">{t('recentFiles')}</div>
-              {saveHistory.length === 0 ? (
-                <div style={{ padding: '1.5rem', color: 'var(--text-secondary)', opacity: 0.5, fontSize: '0.9rem', textAlign: 'center' }}>
-                  {t('noHistory')}
-                </div>
-              ) : (
-                <>
-                  {saveHistory.map((filepath) => (
-                    <HistoryItem
-                      key={filepath}
-                      filepath={filepath}
-                      onLoad={loadFromHistory}
-                      onRemove={removeFromHistory}
-                      onReveal={revealInFinder}
-                    />
-                  ))}
-                  <button onClick={clearHistory} className="btn-ghost btn-danger-ghost" style={{ textAlign: 'center', fontWeight: '600' }}>
-                    {t('historyClear')}
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-
-          <input
-            className="filename-input"
-            type="text"
-            value={filename}
-            onChange={(e) => setFilename(e.target.value)}
-            placeholder={t('untitled')}
-          />
-
-          <button
-            className="icon-button"
-            onClick={() => setShowHistory(!showHistory)}
-            title={t('recentFiles')}
-          >
-            <ClockIcon size={16} />
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <button
-            className="icon-button"
-            onClick={() => editor && editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
-            title={t('insertTable')}
-          >
-            <TableIcon size={16} />
-          </button>
-          <button
-            className="icon-button"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            title={t('toggleTheme')}
-          >
-            {theme === 'dark' ? <MoonIcon size={16} /> : <SunIcon size={16} />}
-          </button>
-          {status && <span style={{ fontSize: '0.8rem', color: 'var(--accent-color)', fontWeight: '500' }}>{status}</span>}
-          <button className="save-button" onClick={handleSave}>{t('save')}</button>
-          <button
-            className="save-button-secondary"
-            onClick={handleOutputAndClose}
-          >
-            {t('finishOutput')}
-          </button>
-        </div>
-      </header>
-
       {backups.length > 0 && (
         <div className="backup-banner">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ffa500' }}>
@@ -171,7 +99,81 @@ const App = () => {
         </div>
       )}
 
-      <main style={{ flex: 1, overflowY: 'auto' }}>
+      <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <header className="app-header-floating">
+          {/* Title Island (Left) */}
+          <div className="island island-title">
+            <input
+              className="filename-input-minimal"
+              type="text"
+              value={filename}
+              onChange={(e) => setFilename(e.target.value)}
+              placeholder={t('untitled')}
+            />
+          </div>
+
+          {/* Right Side Groups */}
+          <div className="header-right-groups">
+            {/* Tools Island (Right 1) */}
+            <div ref={historyRef} className="island island-tools">
+              <button
+                className="icon-button-minimal"
+                onClick={() => setShowHistory(!showHistory)}
+                title={t('recentFiles')}
+              >
+                <ClockIcon size={14} />
+              </button>
+              <button
+                className="icon-button-minimal"
+                onClick={() => editor && editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+                title={t('insertTable')}
+              >
+                <TableIcon size={14} />
+              </button>
+              <button
+                className="icon-button-minimal"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                title={t('toggleTheme')}
+              >
+                {theme === 'dark' ? <MoonIcon size={14} /> : <SunIcon size={14} />}
+              </button>
+
+              {showHistory && (
+                <div className="dropdown-menu">
+                  <div className="dropdown-header">{t('recentFiles')}</div>
+                  {saveHistory.length === 0 ? (
+                    <div style={{ padding: '1.5rem', color: 'var(--text-secondary)', opacity: 0.5, fontSize: '0.9rem', textAlign: 'center' }}>
+                      {t('noHistory')}
+                    </div>
+                  ) : (
+                    <>
+                      {saveHistory.map((filepath) => (
+                        <HistoryItem
+                          key={filepath}
+                          filepath={filepath}
+                          onLoad={loadFromHistory}
+                          onRemove={removeFromHistory}
+                          onReveal={revealInFinder}
+                        />
+                      ))}
+                      <button onClick={clearHistory} className="btn-ghost btn-danger-ghost" style={{ textAlign: 'center', fontWeight: '600' }}>
+                        {t('historyClear')}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Actions Island (Right 2) */}
+            <div className="island island-actions">
+              {status && <span className="status-label">{status}</span>}
+              <button className="btn-save-pill" onClick={handleSave}>{t('save')}</button>
+              <button className="btn-save-pill-secondary" onClick={handleOutputAndClose}>{t('finishOutput')}</button>
+            </div>
+          </div>
+        </header>
+
         {editor && (
           <BubbleMenu
             editor={editor}
