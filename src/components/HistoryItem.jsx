@@ -78,7 +78,7 @@ const HistoryItem = ({ filepath, onLoad, onRemove, onReveal }) => {
           <button
             ref={triggerRef}
             onClick={handleMenuToggle}
-            className="icon-button"
+            className="icon-button-minimal"
             style={{ 
               padding: '0.2rem',
               background: menuOpen ? 'var(--hover-bg)' : 'transparent',
