@@ -2,7 +2,10 @@
 	"name": "tpad",
 	"version": "0.0.0",
 	"license": "MIT",
-	"bin": "bin/cli.js",
+	"bin": {
+		"tpad": "bin/cli.js",
+		"tpad-mcp": "bin/mcp.js"
+	},
 	"type": "module",
 	"engines": {
 		"node": ">=16"

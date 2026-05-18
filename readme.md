@@ -55,16 +55,41 @@ tpad | pbcopy
 ```
 編集完了後に「完了して出力」をクリックすると、作成したテキストがMacのクリップボードにコピーされます。
 
-#### 4. Claude Codeのインタラクティブチャットと連携する
-Claude CLIでのチャットセッション中に、エディタを起動して手動でテキストや構成をビジュアル編集したい場合、チャット内で直接Tpadの起動を指示できます。
+#### 4. Claude Code (MCPサーバー) と連携する
 
-* **チャット入力例**:
-  > `tpad memo.md を開いて。手動で構成を調整します。`
+Tpadは Model Context Protocol (MCP) に対応しています。Claude CLIなどのMCPクライアントに登録することで、Claudeが生成したテキストをファイルとして書き出すことなく直接ブラウザで開き、視覚的に確認・編集した結果をそのままチャットセッションに戻すことができます。
 
-* **動作の流れ**:
-  1. Claudeが自動的にコマンドを実行し、ブラウザでTpadが起動します。
-  2. 編集を完了して「完了して出力」をクリックすると、Tpadのプロセスが終了して制御がターミナルに戻ります。
-  3. Claudeが更新後のファイルを読み込んで対話を継続します。
+##### 設定方法 (`~/.claude.json` への追記)
+
+```json
+{
+  "mcpServers": {
+    "tpad": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "--package",
+        "github:YOUR_GITHUB_USERNAME/tpad",
+        "tpad-mcp"
+      ]
+    }
+  }
+}
+```
+*※ `YOUR_GITHUB_USERNAME` はご自身のGitHubユーザー名に置き換えてください。*
+*※ グローバルインストール済みの場合は、`"command": "tpad-mcp"` の指定のみで動作します。*
+
+##### 使い方・動作の流れ
+
+1. **チャットで文章作成を指示する**
+   Claude CLIとの対話中に、Tpad上での文章作成や編集を指示します。
+   > **指示例**: `「API仕様書」のドラフトをTpadで作成して。`
+2. **ブラウザが起動しエディタが開く**
+   ClaudeがMCP経由で `tpad` ツールを呼び出し、生成されたMarkdownを保持した状態でブラウザが自動起動します。
+3. **確認・編集する**
+   ブラウザでテーブルの追加やテキストの微調整を行います。
+4. **結果をチャットに戻す**
+   Tpadヘッダーの「完了して出力」をクリックすると、ブラウザが終了し、編集後のテキストが直接Claudeへ送信されます。Claudeは受け取った編集結果を基に対話を継続します。
 
 ---
 
@@ -119,16 +144,41 @@ tpad | pbcopy
 ```
 Edit your text in the browser, and upon clicking **Finish & Output**, the formatted Markdown is copied straight to your Mac clipboard.
 
-#### 4. Integration with Interactive Claude Code Chat
-During a chat session with the Claude CLI, you can ask Claude to open any Markdown file in Tpad to perform manual rich-text edits or visual layout adjustments.
+#### 4. Claude Code (MCP Server) Integration
 
-* **Example Prompt in Claude Chat**:
-  > `Open memo.md in tpad so I can manually adjust the layout.`
+Tpad features a built-in Model Context Protocol (MCP) server. By registering Tpad as an MCP server with Claude CLI, Claude can launch Tpad in your browser to draft or edit Markdown content. Your visual adjustments are piped directly back into the active chat session.
 
-* **How It Works**:
-  1. Claude executes the command in the background, opening Tpad in your browser.
-  2. Perform your visual edits, and click "Finish & Output" to close the editor session.
-  3. Control returns to your terminal. Claude reads the updated file content and continues the conversation.
+##### Configuration (Add to `~/.claude.json`)
+
+```json
+{
+  "mcpServers": {
+    "tpad": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "--package",
+        "github:YOUR_GITHUB_USERNAME/tpad",
+        "tpad-mcp"
+      ]
+    }
+  }
+}
+```
+*Replace `YOUR_GITHUB_USERNAME` with your actual GitHub username.*
+*If installed globally, you can simplify the command to `"command": "tpad-mcp"`.*
+
+##### How It Works
+
+1. **Ask Claude to write or edit content in Tpad**
+   Request Claude to draft or refine Markdown content directly in the editor.
+   > **Example**: `Draft the API specification in tpad.`
+2. **Browser launches with Tpad**
+   Claude triggers the `tpad` MCP tool, launching your browser with the draft pre-loaded.
+3. **Edit and review visually**
+   Refine your tables, checklists, or text inside Tpad.
+4. **Pipe results back to the chat**
+   Click **Finish & Output** inside Tpad to close the session. The finalized Markdown content is sent directly back to Claude as the tool response, letting Claude continue the conversation using your edits.
 
 ---
 
