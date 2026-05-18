@@ -146,7 +146,6 @@ const App = () => {
 
           {/* Actions Island (Right 2) */}
           <div className="island island-actions">
-            {status && <span className="status-label">{status}</span>}
             <button className="btn-save-pill" onClick={handleSave}>{t('save')}</button>
             <button className="btn-save-pill-secondary" onClick={handleOutputAndClose}>{t('finishOutput')}</button>
           </div>
@@ -209,6 +208,19 @@ const App = () => {
         )}
         <EditorContent editor={editor} />
       </main>
+
+      {status && (
+        <div className="status-toast">
+          {status.includes('中') || status.includes('ing') ? (
+            <span className="toast-spinner" />
+          ) : status.includes('エラー') || status.toLowerCase().includes('error') ? (
+            <span className="toast-dot toast-dot-error" />
+          ) : (
+            <span className="toast-dot toast-dot-success" />
+          )}
+          <span>{status}</span>
+        </div>
+      )}
     </div>
   );
 };
