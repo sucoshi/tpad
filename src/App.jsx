@@ -121,31 +121,30 @@ const App = () => {
             onClick={() => setShowHistory(!showHistory)}
             title={t('recentFiles')}
           >
-            <ClockIcon size={18} />
+            <ClockIcon size={16} />
           </button>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <button
             className="icon-button"
             onClick={() => editor && editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
             title={t('insertTable')}
           >
-            <TableIcon size={18} />
+            <TableIcon size={16} />
           </button>
           <button
             className="icon-button"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             title={t('toggleTheme')}
           >
-            {theme === 'dark' ? <MoonIcon size={18} /> : <SunIcon size={18} />}
+            {theme === 'dark' ? <MoonIcon size={16} /> : <SunIcon size={16} />}
           </button>
-          {status && <span style={{ fontSize: '0.85rem', color: 'var(--accent-color)', fontWeight: '500' }}>{status}</span>}
+          {status && <span style={{ fontSize: '0.8rem', color: 'var(--accent-color)', fontWeight: '500' }}>{status}</span>}
           <button className="save-button" onClick={handleSave}>{t('save')}</button>
           <button
-            className="save-button"
+            className="save-button-secondary"
             onClick={handleOutputAndClose}
-            style={{ background: 'transparent', border: '1px solid var(--accent-color)', color: 'var(--accent-color)' }}
           >
             {t('finishOutput')}
           </button>
