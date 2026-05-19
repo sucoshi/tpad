@@ -80,7 +80,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
       // Try dynamically assigning a port (0 means random free port)
       expressServer = app.listen(0, async () => {
         const port = expressServer.address().port;
-        const url = `http://localhost:${port}`;
+        const url = `http://localhost:${port}/?mcp=true`;
         try {
           await open(url);
         } catch (err) {

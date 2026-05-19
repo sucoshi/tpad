@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -19,6 +19,7 @@ import Link from '@tiptap/extension-link';
 import SaveDialog from './components/SaveDialog';
 
 const App = () => {
+  const isMcp = useMemo(() => new URLSearchParams(window.location.search).get('mcp') === 'true', []);
   const historyRef = useRef(null);
 
   const [isEditingLink, setIsEditingLink] = useState(false);
@@ -262,7 +263,9 @@ const App = () => {
 
           {/* Actions Island */}
           <div className="island island-actions">
-            <button className="btn-save-pill-secondary" onClick={handleOutputAndClose}>{t('finishOutput')}</button>
+            <button className="btn-save-pill-secondary" onClick={handleOutputAndClose}>
+              {isMcp ? (language === 'ja' ? 'Claude Codeに返す' : 'Return to Claude Code') : t('finishOutput')}
+            </button>
             <button className="btn-save-pill" onClick={handleSave}>{t('save')}</button>
           </div>
         </div>
@@ -398,9 +401,11 @@ const App = () => {
         <div className="exit-fullscreen-overlay">
           <div className="exit-card">
             <div className="exit-icon-circle">✓</div>
-            <h2>{t('doneClose')}</h2>
+            <h2>{isMcp ? (language === 'ja' ? 'Claude Codeに送信完了！' : 'Sent to Claude Code!') : t('doneClose')}</h2>
             <p className="exit-subtitle">
-              {language === 'ja' ? 'ターミナルに戻って作業を継続できます。' : 'You can return to your terminal to continue.'}
+              {isMcp 
+                ? (language === 'ja' ? '内容をClaude Codeへ送り返しました。このタブを閉じてターミナルへ戻り、指示を継続してください。' : 'Content sent back to Claude Code. You can close this tab and return to the terminal.')
+                : (language === 'ja' ? 'ターミナルに戻って作業を継続できます。' : 'You can return to your terminal to continue.')}
             </p>
           </div>
         </div>
