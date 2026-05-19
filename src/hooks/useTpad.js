@@ -9,6 +9,9 @@ export const useTpad = (editor) => {
   const [showHistory, setShowHistory] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('tpad-theme') || 'dark');
   const [language, setLanguageState] = useState(getCurrentLanguage());
+  
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [hasUserEditedFilename, setHasUserEditedFilename] = useState(false);
 
   const toggleLanguage = () => {
     const nextLang = language === 'ja' ? 'en' : 'ja';
@@ -30,7 +33,12 @@ export const useTpad = (editor) => {
       .then((res) => res.json())
       .then((data) => {
         if (data.content) editor.commands.setContent(data.content);
-        if (data.filename) setFilename(data.filename.replace(/\.md$/, ''));
+        if (data.filename) {
+          setFilename(data.filename.replace(/\.md$/, ''));
+          setHasUserEditedFilename(true); // Already has a file path from CLI
+        } else {
+          setHasUserEditedFilename(false); // New untitled document, allow H1 auto-sync!
+        }
       })
       .catch(console.error);
 
@@ -159,21 +167,49 @@ export const useTpad = (editor) => {
     }
   };
 
+  const handleSaveConfirm = useCallback(async (inputFilename, selectedDir) => {
+    if (!editor || !inputFilename.trim()) return;
+
+    setStatus(t('saving'));
+    try {
+      const content = editor.storage.markdown.getMarkdown();
+      const filenameWithExt = inputFilename.endsWith('.md') ? inputFilename : `${inputFilename}.md`;
+      const res = await fetch('/api/file', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content, filename: filenameWithExt, directory: selectedDir }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || t('saveError'));
+
+      // If backend returned a fully resolved path, we can strip .md and update our state
+      const newFilename = result.filename || filenameWithExt;
+      setFilename(newFilename.replace(/\.md$/, ''));
+      setHasUserEditedFilename(true);
+      setShowSaveDialog(false);
+
+      setStatus(t('saved'));
+      setTimeout(() => setStatus(''), 2000);
+      refreshHistory();
+    } catch (err) {
+      console.error(err);
+      setStatus(t('saveError'));
+    }
+  }, [editor, refreshHistory]);
+
   const handleSave = useCallback(async () => {
     if (!editor) return;
 
-    let currentFilename = filename;
-    if (!currentFilename) {
-      const inputName = window.prompt(t('enterFilename'), t('untitled'));
-      if (!inputName) return;
-      currentFilename = inputName;
-      setFilename(inputName);
+    if (!filename) {
+      setShowSaveDialog(true);
+      return;
     }
 
     setStatus(t('saving'));
     try {
       const content = editor.storage.markdown.getMarkdown();
-      const filenameWithExt = currentFilename.endsWith('.md') ? currentFilename : `${currentFilename}.md`;
+      const filenameWithExt = filename.endsWith('.md') ? filename : `${filename}.md`;
       const res = await fetch('/api/file', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -190,7 +226,7 @@ export const useTpad = (editor) => {
       console.error(err);
       setStatus(t('saveError'));
     }
-  }, [editor, filename]);
+  }, [editor, filename, refreshHistory]);
 
   const handleOutputAndClose = useCallback(async () => {
     if (!editor) return;
@@ -219,6 +255,8 @@ export const useTpad = (editor) => {
     language, toggleLanguage,
     loadBackup, deleteBackup,
     loadFromHistory, clearHistory, removeFromHistory, revealInFinder,
-    handleSave, handleOutputAndClose
+    handleSave, handleSaveConfirm, handleOutputAndClose,
+    showSaveDialog, setShowSaveDialog,
+    hasUserEditedFilename, setHasUserEditedFilename
   };
 };

@@ -1,7 +1,7 @@
 const translations = {
   ja: {
     save: '保存',
-    finishOutput: '完了して出力',
+    finishOutput: '完了して閉じる',
     recentFiles: '最近のファイル',
     historyClear: '履歴をクリア',
     finderReveal: 'Finderで表示',
@@ -15,7 +15,7 @@ const translations = {
     saved: '保存完了！',
     saveError: '保存エラー',
     sending: 'ターミナルに送信中...',
-    doneClose: '完了！このタブを閉じても大丈夫です。',
+    doneClose: '適用が完了しました！このタブを閉じてください。',
     noHistory: '履歴はありません。',
     enterFilename: '保存するファイル名を入力してください:',
     toggleTheme: 'テーマを切り替え',
@@ -30,7 +30,7 @@ const translations = {
   },
   en: {
     save: 'Save',
-    finishOutput: 'Finish & Output',
+    finishOutput: 'Finish & Close',
     recentFiles: 'Recent Files',
     historyClear: 'Clear History',
     finderReveal: 'Reveal in Finder',
@@ -44,7 +44,7 @@ const translations = {
     saved: 'Saved!',
     saveError: 'Error saving',
     sending: 'Sending to terminal...',
-    doneClose: 'Done! You can close this tab.',
+    doneClose: 'Changes applied! You can close this tab now.',
     noHistory: 'No history found.',
     enterFilename: 'Enter filename to save:',
     toggleTheme: 'Toggle theme',

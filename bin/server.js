@@ -68,24 +68,64 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
     res.json({ content: currentContent, filename: currentFilename });
   });
 
-  app.post('/api/file', async (req, res) => {
-    const { content, filename } = req.body;
+  app.post('/api/dirs', (req, res) => {
+    const { currentPath } = req.body;
     try {
+      let targetPath = currentPath ? path.resolve(currentPath) : process.cwd();
+      if (!fs.existsSync(targetPath) || !fs.statSync(targetPath).isDirectory()) {
+        targetPath = process.cwd();
+      }
+
+      const files = fs.readdirSync(targetPath);
+      const directories = [];
+
+      for (const file of files) {
+        if (file.startsWith('.')) continue; // Skip hidden dirs/files
+        try {
+          const fullPath = path.join(targetPath, file);
+          if (fs.statSync(fullPath).isDirectory()) {
+            directories.push(file);
+          }
+        } catch (e) {
+          // ignore permission errors
+        }
+      }
+
+      // Sort alphabetically
+      directories.sort((a, b) => a.localeCompare(b));
+
+      res.json({
+        currentPath: targetPath,
+        parentPath: targetPath === '/' ? '/' : path.dirname(targetPath),
+        directories
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/api/file', async (req, res) => {
+    const { content, filename, directory } = req.body;
+    try {
+      let resolvedFilename = filename;
+      if (directory && filename) {
+        resolvedFilename = path.isAbsolute(filename) ? filename : path.resolve(directory, filename);
+      }
       if (onSave) {
-        const savedPath = await onSave(content, filename);
+        const savedPath = await onSave(content, resolvedFilename);
         if (savedPath) {
           addToHistory(savedPath);
         }
       }
       currentContent = content ?? currentContent;
-      currentFilename = filename ?? currentFilename;
+      currentFilename = resolvedFilename ?? currentFilename;
       
       // Clean up backup after successful save
       if (fs.existsSync(backupFile)) {
         fs.unlinkSync(backupFile);
       }
 
-      res.json({ success: true });
+      res.json({ success: true, filename: resolvedFilename });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });
     }
