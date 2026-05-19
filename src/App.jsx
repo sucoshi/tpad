@@ -305,7 +305,7 @@ const App = () => {
               <button onClick={() => editor.chain().focus().addColumnAfter().run()} title={t('addColumnAfter')}>
                 <AddColumnRightIcon size={14} />
               </button>
-              <button onClick={() => editor.chain().focus().deleteColumn().run()} className="btn-danger" title={t('deleteColumn')}>
+              <button onClick={() => editor.chain().focus().deleteColumn().run()} title={t('deleteColumn')}>
                 <DeleteColumnIcon size={14} />
               </button>
               <span style={{ width: '1px', background: 'var(--border-color)', margin: '0.2rem 0.1rem' }} />
@@ -315,11 +315,11 @@ const App = () => {
               <button onClick={() => editor.chain().focus().addRowBelow().run()} title={t('addRowBelow')}>
                 <AddRowBelowIcon size={14} />
               </button>
-              <button onClick={() => editor.chain().focus().deleteRow().run()} className="btn-danger" title={t('deleteRow')}>
+              <button onClick={() => editor.chain().focus().deleteRow().run()} title={t('deleteRow')}>
                 <DeleteRowIcon size={14} />
               </button>
               <span style={{ width: '1px', background: 'var(--border-color)', margin: '0.2rem 0.1rem' }} />
-              <button onClick={() => editor.chain().focus().deleteTable().run()} className="btn-danger" title={t('deleteTable')}>
+              <button onClick={() => editor.chain().focus().deleteTable().run()} title={t('deleteTable')}>
                 <TrashIcon size={14} />
                 <span>{t('deleteTable')}</span>
               </button>
