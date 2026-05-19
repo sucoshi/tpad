@@ -47,6 +47,20 @@ Tpadは Model Context Protocol (MCP) に対応しています。Claude CLIなど
 
 ##### 設定方法 (`~/.claude.json` への追記)
 
+**【推奨】グローバルインストール済みの場合はこちら（起動が高速です）：**
+
+```json
+{
+  "mcpServers": {
+    "tpad": {
+      "command": "tpad-mcp"
+    }
+  }
+}
+```
+
+**【代替案】グローバルインストールせずに一時的に実行したい場合はこちら：**
+
 ```json
 {
   "mcpServers": {
@@ -62,7 +76,6 @@ Tpadは Model Context Protocol (MCP) に対応しています。Claude CLIなど
   }
 }
 ```
-*※ グローバルインストール済みの場合は、`"command": "tpad-mcp"` の指定のみで動作します。*
 
 ##### 使い方・動作の流れ
 
@@ -120,6 +133,20 @@ Tpad features a built-in Model Context Protocol (MCP) server. By registering Tpa
 
 ##### Configuration (Add to `~/.claude.json`)
 
+**[Recommended] If globally installed (Faster startup):**
+
+```json
+{
+  "mcpServers": {
+    "tpad": {
+      "command": "tpad-mcp"
+    }
+  }
+}
+```
+
+**[Alternative] If you want to run it without global installation:**
+
 ```json
 {
   "mcpServers": {
@@ -135,7 +162,6 @@ Tpad features a built-in Model Context Protocol (MCP) server. By registering Tpa
   }
 }
 ```
-*If installed globally, you can simplify the command to `"command": "tpad-mcp"`.*
 
 ##### How It Works
 
