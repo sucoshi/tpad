@@ -51,6 +51,21 @@ const SaveDialog = ({ isOpen, initialFilename, onSave, onCancel }) => {
     }
   };
 
+  const handleBrowseFinder = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/browse-finder', { method: 'POST' });
+      const data = await res.json();
+      if (!data.cancelled && data.chosenPath) {
+        fetchDirs(data.chosenPath);
+      }
+    } catch (err) {
+      console.error('Failed to choose folder in Finder:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Split paths into breadcrumbs
   const pathParts = currentPath.split('/').filter(Boolean);
 
@@ -100,7 +115,7 @@ const SaveDialog = ({ isOpen, initialFilename, onSave, onCancel }) => {
 
             {/* Folder browser box */}
             <div className="dialog-folder-box">
-              <div className="folder-box-header">
+              <div className="folder-box-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <button 
                   onClick={navigateUp} 
                   disabled={currentPath === '/' || isLoading}
@@ -109,6 +124,16 @@ const SaveDialog = ({ isOpen, initialFilename, onSave, onCancel }) => {
                 >
                   <FolderUpIcon size={14} style={{ marginRight: 6 }} />
                   <span>親フォルダへ</span>
+                </button>
+
+                <button
+                  onClick={handleBrowseFinder}
+                  disabled={isLoading}
+                  className="btn-navigate-up"
+                  title="macOS Finderでフォルダを選択"
+                  style={{ borderColor: 'var(--accent-color)', color: 'var(--accent-color)', fontWeight: 600 }}
+                >
+                  <span>Finderで選択...</span>
                 </button>
               </div>
 

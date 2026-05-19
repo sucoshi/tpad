@@ -43,6 +43,14 @@ const App = () => {
       }),
     ],
     editorProps: {
+      handleClick: (view, pos, event) => {
+        const { target } = event;
+        if (target && target.tagName === 'A') {
+          event.preventDefault();
+          return true;
+        }
+        return false;
+      },
       handlePaste: (view, event) => {
         const text = event.clipboardData?.getData('text/plain');
         if (!text) return false;
@@ -133,6 +141,16 @@ const App = () => {
     window.addEventListener('unload', handleUnload);
     return () => window.removeEventListener('unload', handleUnload);
   }, [editor]);
+
+  // Heartbeat loop to keep Express server alive
+  useEffect(() => {
+    const pingHeartbeat = () => {
+      fetch('/api/heartbeat', { method: 'POST' }).catch(() => {});
+    };
+    pingHeartbeat();
+    const interval = setInterval(pingHeartbeat, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -373,6 +391,18 @@ const App = () => {
             <span className="toast-dot toast-dot-success" />
           )}
           <span>{status}</span>
+        </div>
+      )}
+
+      {status === t('doneClose') && (
+        <div className="exit-fullscreen-overlay">
+          <div className="exit-card">
+            <div className="exit-icon-circle">✓</div>
+            <h2>{t('doneClose')}</h2>
+            <p className="exit-subtitle">
+              {language === 'ja' ? 'ターミナルに戻って作業を継続できます。' : 'You can return to your terminal to continue.'}
+            </p>
+          </div>
         </div>
       )}
 

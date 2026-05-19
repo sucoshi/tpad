@@ -12,6 +12,7 @@ export const useTpad = (editor) => {
   
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [hasUserEditedFilename, setHasUserEditedFilename] = useState(false);
+  const [hasSavedToDisk, setHasSavedToDisk] = useState(false);
 
   const toggleLanguage = () => {
     const nextLang = language === 'ja' ? 'en' : 'ja';
@@ -36,8 +37,10 @@ export const useTpad = (editor) => {
         if (data.filename) {
           setFilename(data.filename.replace(/\.md$/, ''));
           setHasUserEditedFilename(true); // Already has a file path from CLI
+          setHasSavedToDisk(true);
         } else {
           setHasUserEditedFilename(false); // New untitled document, allow H1 auto-sync!
+          setHasSavedToDisk(false);
         }
       })
       .catch(console.error);
@@ -187,6 +190,7 @@ export const useTpad = (editor) => {
       const newFilename = result.filename || filenameWithExt;
       setFilename(newFilename.replace(/\.md$/, ''));
       setHasUserEditedFilename(true);
+      setHasSavedToDisk(true);
       setShowSaveDialog(false);
 
       setStatus(t('saved'));
@@ -201,7 +205,7 @@ export const useTpad = (editor) => {
   const handleSave = useCallback(async () => {
     if (!editor) return;
 
-    if (!filename) {
+    if (!hasSavedToDisk) {
       setShowSaveDialog(true);
       return;
     }
@@ -226,7 +230,7 @@ export const useTpad = (editor) => {
       console.error(err);
       setStatus(t('saveError'));
     }
-  }, [editor, filename, refreshHistory]);
+  }, [editor, filename, hasSavedToDisk, refreshHistory]);
 
   const handleOutputAndClose = useCallback(async () => {
     if (!editor) return;
@@ -257,6 +261,7 @@ export const useTpad = (editor) => {
     loadFromHistory, clearHistory, removeFromHistory, revealInFinder,
     handleSave, handleSaveConfirm, handleOutputAndClose,
     showSaveDialog, setShowSaveDialog,
-    hasUserEditedFilename, setHasUserEditedFilename
+    hasUserEditedFilename, setHasUserEditedFilename,
+    hasSavedToDisk, setHasSavedToDisk
   };
 };

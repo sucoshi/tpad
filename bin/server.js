@@ -21,6 +21,9 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
   const sessionId = Date.now().toString() + Math.floor(Math.random() * 1000).toString();
   const backupFile = path.join(backupDir, `backup-${sessionId}.md`);
 
+  let lastHeartbeat = Date.now();
+  let hasReceivedFirstHeartbeat = false;
+
   const historyFile = path.join(os.homedir(), '.tpad-history.json');
   const maxHistory = 20;
 
@@ -149,12 +152,30 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
     }
   });
 
+  app.post('/api/heartbeat', (req, res) => {
+    lastHeartbeat = Date.now();
+    hasReceivedFirstHeartbeat = true;
+    res.json({ success: true });
+  });
+
+  app.post('/api/browse-finder', (req, res) => {
+    const script = `osascript -e "POSIX path of (choose folder with prompt \\"保存先フォルダを選択してください:\\")"`;
+    exec(script, (error, stdout, stderr) => {
+      if (error) {
+        return res.json({ cancelled: true });
+      }
+      const chosenPath = stdout.trim();
+      res.json({ chosenPath });
+    });
+  });
+
   // Backup endpoints
   app.post('/api/backup', (req, res) => {
     const { content } = req.body;
     try {
       if (content && content.trim() !== '') {
         fs.writeFileSync(backupFile, content, 'utf8');
+        currentContent = content;
       }
       res.json({ success: true });
     } catch (err) {
@@ -289,6 +310,38 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
   app.use((req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });
+
+  // Heartbeat checker for browser connection
+  const startupTime = Date.now();
+  const heartbeatInterval = setInterval(() => {
+    if (hasReceivedFirstHeartbeat) {
+      if (Date.now() - lastHeartbeat > 3000) {
+        clearInterval(heartbeatInterval);
+        console.error("tpad: Connection lost (browser tab closed). Exiting...");
+        if (fs.existsSync(backupFile)) {
+          try {
+            fs.unlinkSync(backupFile);
+          } catch (e) {}
+        }
+        if (onExit) {
+          onExit(currentContent);
+        } else {
+          process.exit(0);
+        }
+      }
+    } else {
+      if (Date.now() - startupTime > 15000) {
+        clearInterval(heartbeatInterval);
+        console.error("tpad: Initial browser connection timed out. Exiting...");
+        if (fs.existsSync(backupFile)) {
+          try {
+            fs.unlinkSync(backupFile);
+          } catch (e) {}
+        }
+        process.exit(0);
+      }
+    }
+  }, 1000);
 
   return app;
 }
