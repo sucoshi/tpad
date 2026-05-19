@@ -107,6 +107,24 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
     }
   });
 
+  app.post('/api/check-exists', (req, res) => {
+    const { filename, directory } = req.body;
+    try {
+      if (!filename) {
+        return res.json({ exists: false });
+      }
+      let resolvedFilename = filename;
+      if (directory) {
+        resolvedFilename = path.isAbsolute(filename) ? filename : path.resolve(directory, filename);
+      }
+      const filenameWithExt = resolvedFilename.endsWith('.md') ? resolvedFilename : `${resolvedFilename}.md`;
+      const exists = fs.existsSync(filenameWithExt);
+      res.json({ exists });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post('/api/file', async (req, res) => {
     const { content, filename, directory } = req.body;
     try {
