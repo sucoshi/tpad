@@ -470,6 +470,24 @@ ul[data-type="taskList"] input[type="checkbox"] {
   text-align: left;
   border-radius: 4px;
   transition: width 0.15s ease-out;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  
+  /* Fallback constraints for non-field-sizing browsers */
+  min-width: 120px;
+  max-width: 350px;
+}
+
+@supports (field-sizing: content) {
+  .filename-input-minimal {
+    field-sizing: content;
+    width: auto;
+  }
+}
+
+.filename-input-minimal:focus {
+  text-overflow: clip;
 }
 
 .icon-button-minimal {

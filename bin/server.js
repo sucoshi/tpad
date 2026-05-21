@@ -9,9 +9,21 @@ import { exec } from 'child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function createApp({ initialContent = '', initialFilename = '', onSave, onExit }) {
+export function createApp({ initialContent = '', initialFilename = '', targetFile: initialTargetFile = null, onSave, onExit }) {
   const app = express();
-  app.use(cors());
+  
+  // Safe CORS configuration: Only allow localhost origins
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+      if (isLocalhost) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    }
+  }));
   app.use(express.json());
 
   const backupDir = path.join(os.homedir(), '.tpad-backups');
@@ -66,6 +78,115 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
 
   let currentContent = initialContent;
   let currentFilename = initialFilename;
+  let targetFile = initialTargetFile;
+  let sseClients = [];
+  let watcher = null;
+  let isSaving = false;
+
+  // SSE support
+  app.get('/api/events', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    sseClients.push(res);
+
+    req.on('close', () => {
+      sseClients = sseClients.filter(client => client !== res);
+    });
+  });
+
+  function broadcast(event, data) {
+    const payload = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+    sseClients.forEach(client => {
+      try {
+        client.write(payload);
+      } catch (err) {
+        // ignore dead connections
+      }
+    });
+  }
+
+  // File Watching logic
+  function startWatching() {
+    if (watcher) {
+      watcher.close();
+      watcher = null;
+    }
+
+    if (!targetFile) return;
+
+    try {
+      watcher = fs.watch(targetFile, (eventType) => {
+        if (eventType === 'change') {
+          if (isSaving) return;
+          
+          // Debounce and read file
+          setTimeout(() => {
+            if (isSaving) return;
+            try {
+              if (fs.existsSync(targetFile)) {
+                const updatedContent = fs.readFileSync(targetFile, 'utf8');
+                if (updatedContent !== currentContent) {
+                  currentContent = updatedContent;
+                  broadcast('file-changed', { content: updatedContent });
+                }
+              }
+            } catch (err) {
+              console.error('Error reading watched file:', err);
+            }
+          }, 150);
+        }
+      });
+    } catch (err) {
+      console.error(`Failed to watch file ${targetFile}:`, err);
+    }
+  }
+
+  // Ping endpoint to detect running server
+  app.get('/api/ping', (req, res) => {
+    res.json({ success: true, app: 'tpad', currentFilename });
+  });
+
+  // Open file or content endpoint (IPC)
+  app.post('/api/open', (req, res) => {
+    const { filepath, content } = req.body;
+    
+    if (filepath) {
+      const resolvedPath = path.resolve(filepath);
+      try {
+        if (fs.existsSync(resolvedPath)) {
+          currentContent = fs.readFileSync(resolvedPath, 'utf8');
+        } else {
+          currentContent = content || '';
+          fs.writeFileSync(resolvedPath, currentContent, 'utf8');
+        }
+        currentFilename = path.basename(resolvedPath);
+        targetFile = resolvedPath;
+        
+        startWatching();
+        
+        broadcast('file-opened', { content: currentContent, filename: currentFilename });
+        res.json({ success: true, filename: currentFilename, filepath: targetFile });
+      } catch (err) {
+        res.status(500).json({ error: `Failed to open file: ${err.message}` });
+      }
+    } else if (content !== undefined) {
+      // In-memory content update
+      currentContent = content;
+      currentFilename = '';
+      targetFile = null;
+      if (watcher) {
+        watcher.close();
+        watcher = null;
+      }
+      broadcast('file-opened', { content: currentContent, filename: currentFilename });
+      res.json({ success: true, filename: currentFilename });
+    } else {
+      res.status(400).json({ error: 'No filepath or content provided' });
+    }
+  });
 
   app.get('/api/file', (req, res) => {
     res.json({ content: currentContent, filename: currentFilename });
@@ -132,6 +253,9 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
       if (directory && filename) {
         resolvedFilename = path.isAbsolute(filename) ? filename : path.resolve(directory, filename);
       }
+      
+      isSaving = true; // Block file watcher from triggering on this save
+      
       if (onSave) {
         const savedPath = await onSave(content, resolvedFilename);
         if (savedPath) {
@@ -149,6 +273,10 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
       res.json({ success: true, filename: resolvedFilename });
     } catch (err) {
       res.status(500).json({ success: false, error: err.message });
+    } finally {
+      setTimeout(() => {
+        isSaving = false;
+      }, 500);
     }
   });
 
@@ -360,6 +488,8 @@ export function createApp({ initialContent = '', initialFilename = '', onSave, o
       }
     }
   }, 1000);
+
+  startWatching();
 
   return app;
 }

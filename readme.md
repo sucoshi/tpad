@@ -179,4 +179,4 @@ Tpad features a built-in Model Context Protocol (MCP) server. By registering Tpa
 
 ## License
 
-MIT © [sucoshi](https://github.com/sucoshi)
+MIT © [sucoshi](https://github.com/sucoshi) – see [LICENSE](./LICENSE) for details.

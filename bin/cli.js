@@ -3,7 +3,62 @@
 import open from 'open';
 import fs from 'fs';
 import path from 'path';
+import http from 'http';
 import { createApp } from './server.js';
+
+function pingServer(port) {
+  return new Promise((resolve) => {
+    const req = http.get(`http://localhost:${port}/api/ping`, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          resolve(json.success && json.app === 'tpad');
+        } catch {
+          resolve(false);
+        }
+      });
+    });
+    req.on('error', () => resolve(false));
+    req.end();
+  });
+}
+
+function openInExistingServer(port, payload) {
+  return new Promise((resolve, reject) => {
+    const postData = JSON.stringify(payload);
+    const req = http.request({
+      hostname: 'localhost',
+      port: port,
+      path: '/api/open',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    }, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          if (json.success) {
+            resolve(json);
+          } else {
+            reject(new Error(json.error || 'Failed to open'));
+          }
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+
+    req.on('error', (err) => reject(err));
+    req.write(postData);
+    req.end();
+  });
+}
 
 const targetFile = process.argv[2] ? path.resolve(process.cwd(), process.argv[2]) : null;
 
@@ -15,6 +70,28 @@ if (!process.stdin.isTTY) {
     }
   } catch (err) {
     console.error('Error reading from stdin:', err);
+  }
+}
+
+const PORT = process.env.PORT || 5050;
+
+// Try pinging existing instance first
+const isRunning = await pingServer(PORT);
+if (isRunning) {
+  try {
+    if (targetFile) {
+      await openInExistingServer(PORT, { filepath: targetFile });
+      console.error(`Opened in existing tpad instance: ${targetFile}`);
+    } else if (pipedContent) {
+      await openInExistingServer(PORT, { content: pipedContent });
+      console.error(`Opened piped content in existing tpad instance.`);
+    } else {
+      await openInExistingServer(PORT, { content: '' });
+      console.error(`Switched to existing tpad instance.`);
+    }
+    process.exit(0);
+  } catch (err) {
+    console.error(`Failed to communicate with existing tpad instance: ${err.message}. Starting new instance...`);
   }
 }
 
@@ -31,6 +108,7 @@ if (targetFile) {
 const app = createApp({
   initialContent,
   initialFilename,
+  targetFile,
   onSave: async (content, filename) => {
     let savedPath = null;
     if (targetFile) {
@@ -52,8 +130,6 @@ const app = createApp({
     process.exit(0);
   }
 });
-
-const PORT = process.env.PORT || 5050;
 
 const server = app.listen(PORT, async () => {
   const address = server.address();

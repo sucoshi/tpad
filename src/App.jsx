@@ -18,6 +18,27 @@ import TaskItem from '@tiptap/extension-task-item';
 import Link from '@tiptap/extension-link';
 import SaveDialog from './components/SaveDialog';
 
+// Check browser support for CSS field-sizing
+const isFieldSizingSupported = typeof CSS !== 'undefined' && CSS.supports && CSS.supports('field-sizing', 'content');
+
+// Helper to determine the width of the filename input when field-sizing is not supported (e.g. Firefox)
+const getFilenameWidth = (name) => {
+  if (isFieldSizingSupported) {
+    return 'auto';
+  }
+  
+  let visualLength = 0;
+  for (let i = 0; i < name.length; i++) {
+    const code = name.charCodeAt(i);
+    if (code > 255) {
+      visualLength += 1.8; // Kanji, Hiragana, Katakana, and other full-width characters
+    } else {
+      visualLength += 1.0;
+    }
+  }
+  return `${Math.max(120, Math.min(350, visualLength * 8 + 20))}px`;
+};
+
 const App = () => {
   const isMcp = useMemo(() => new URLSearchParams(window.location.search).get('mcp') === 'true', []);
   const historyRef = useRef(null);
@@ -98,7 +119,8 @@ const App = () => {
     loadBackup, deleteBackup, loadFromHistory, clearHistory, removeFromHistory, revealInFinder,
     handleSave, handleSaveConfirm, handleOutputAndClose,
     showSaveDialog, setShowSaveDialog,
-    hasUserEditedFilename, setHasUserEditedFilename
+    hasUserEditedFilename, setHasUserEditedFilename,
+    setHasSavedToDisk
   } = useTpad(editor);
 
   // Sync first H1 to filename when filename is not manually edited
@@ -153,6 +175,71 @@ const App = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Server-Sent Events (SSE) listener for live updates
+  useEffect(() => {
+    if (!editor) return;
+
+    let eventSource;
+    
+    const connectSSE = () => {
+      eventSource = new EventSource('/api/events');
+
+      eventSource.addEventListener('file-changed', (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.content !== undefined) {
+            // Only update if the content has actually changed to prevent cursor jumps
+            const currentMarkdown = editor.storage.markdown.getMarkdown();
+            if (data.content !== currentMarkdown) {
+              const { from, to } = editor.state.selection;
+              editor.commands.setContent(data.content, false, { preserveState: true });
+              try {
+                editor.commands.setTextSelection({ from, to });
+              } catch (e) {
+                // ignore out of bounds
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Failed to parse file-changed SSE data:', err);
+        }
+      });
+
+      eventSource.addEventListener('file-opened', (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.content !== undefined) {
+            editor.commands.setContent(data.content);
+            if (data.filename) {
+              setFilename(data.filename.replace(/\.md$/, ''));
+              setHasUserEditedFilename(true);
+              setHasSavedToDisk(true);
+            } else {
+              setFilename('');
+              setHasUserEditedFilename(false);
+              setHasSavedToDisk(false);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to parse file-opened SSE data:', err);
+        }
+      });
+
+      eventSource.onerror = () => {
+        eventSource.close();
+        setTimeout(connectSSE, 2000);
+      };
+    };
+
+    connectSSE();
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, [editor, setFilename, setHasUserEditedFilename, setHasSavedToDisk]);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
@@ -191,7 +278,7 @@ const App = () => {
               setFilename(e.target.value);
               setHasUserEditedFilename(true);
             }}
-            style={{ width: `${Math.max(120, Math.min(350, filename.length * 8 + 20))}px` }}
+            style={{ width: getFilenameWidth(filename) }}
             placeholder={t('untitled')}
           />
         </div>
