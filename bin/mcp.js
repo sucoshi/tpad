@@ -23,6 +23,7 @@ const server = new Server(
 
 let expressServer = null;
 let currentPort = null;
+let lastKnownContent = '';
 const PORT = process.env.PORT || 5050;
 
 function pingServer(port) {
@@ -82,6 +83,10 @@ function sendIpcRequest(port, method, apiPath, payload) {
 }
 
 async function startPersistentServer(initialContent) {
+  if (initialContent !== undefined) {
+    lastKnownContent = initialContent;
+  }
+
   if (expressServer) {
     return currentPort;
   }
@@ -97,6 +102,9 @@ async function startPersistentServer(initialContent) {
     const app = createApp({
       initialContent: initialContent || '',
       onSave: async (content, filename) => {
+        if (content !== undefined) {
+          lastKnownContent = content;
+        }
         if (!filename) return null;
         try {
           const savedPath = path.resolve(process.cwd(), filename);
@@ -108,6 +116,9 @@ async function startPersistentServer(initialContent) {
         }
       },
       onExit: async (content) => {
+        if (content !== undefined) {
+          lastKnownContent = content;
+        }
         if (expressServer) {
           expressServer.close();
           expressServer = null;
@@ -215,6 +226,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
     }
     
     if (!currentPort) {
+      if (lastKnownContent !== undefined && lastKnownContent !== '') {
+        return {
+          content: [{ type: "text", text: lastKnownContent }]
+        };
+      }
       return {
         content: [{ type: "text", text: "Error: No active tpad session is running. Please open it using 'tpad_open' first." }]
       };
@@ -222,10 +238,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
     
     try {
       const fileData = await sendIpcRequest(currentPort, 'GET', '/api/file');
+      if (fileData && fileData.content !== undefined) {
+        lastKnownContent = fileData.content;
+      }
       return {
         content: [{ type: "text", text: fileData.content || '' }]
       };
     } catch (err) {
+      if (lastKnownContent !== undefined && lastKnownContent !== '') {
+        return {
+          content: [{ type: "text", text: lastKnownContent }]
+        };
+      }
       return {
         content: [{ type: "text", text: `Error reading active tpad editor: ${err.message}` }]
       };

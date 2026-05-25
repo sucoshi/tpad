@@ -491,7 +491,9 @@ const App = () => {
             <h2>{isMcp ? (language === 'ja' ? 'Claude Codeに送信完了！' : 'Sent to Claude Code!') : t('doneClose')}</h2>
             <p className="exit-subtitle">
               {isMcp 
-                ? (language === 'ja' ? '内容をClaude Codeへ送り返しました。このタブを閉じてターミナルへ戻り、指示を継続してください。' : 'Content sent back to Claude Code. You can close this tab and return to the terminal.')
+                ? (language === 'ja' 
+                    ? '内容を送信しました。ターミナル（Claude Code）に戻り、「編集完了」や「確定して」と入力して指示を継続してください。' 
+                    : 'Content sent. Please return to your terminal (Claude Code) and type "Done" or "Proceed" to continue.')
                 : (language === 'ja' ? 'ターミナルに戻って作業を継続できます。' : 'You can return to your terminal to continue.')}
             </p>
           </div>
