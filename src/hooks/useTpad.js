@@ -170,6 +170,22 @@ export const useTpad = (editor) => {
     }
   };
 
+  const triggerDownload = (content, filename) => {
+    try {
+      const blob = new Blob([content], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename.endsWith('.md') ? filename : `${filename}.md`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Failed to trigger download:', e);
+    }
+  };
+
   const handleSaveConfirm = useCallback(async (inputFilename, selectedDir) => {
     if (!editor || !inputFilename.trim()) return;
 
@@ -199,6 +215,20 @@ export const useTpad = (editor) => {
     } catch (err) {
       console.error(err);
       setStatus(t('saveError'));
+
+      // Fallback: download directly in browser
+      const content = editor.storage.markdown.getMarkdown();
+      const fn = inputFilename || 'untitled';
+      const filenameWithExt = fn.endsWith('.md') ? fn : `${fn}.md`;
+      const shouldDownload = window.confirm(
+        getCurrentLanguage() === 'ja'
+          ? 'ローカルサーバーとの接続が切れたため、保存できませんでした。\n編集中の内容をMarkdownファイルとしてブラウザからダウンロードしますか？'
+          : 'Failed to save because the local server connection was lost.\nWould you like to download your edits as a Markdown file directly from the browser?'
+      );
+      if (shouldDownload) {
+        triggerDownload(content, filenameWithExt);
+        setShowSaveDialog(false);
+      }
     }
   }, [editor, refreshHistory]);
 
@@ -229,6 +259,19 @@ export const useTpad = (editor) => {
     } catch (err) {
       console.error(err);
       setStatus(t('saveError'));
+
+      // Fallback: download directly in browser
+      const content = editor.storage.markdown.getMarkdown();
+      const fn = filename || 'untitled';
+      const filenameWithExt = fn.endsWith('.md') ? fn : `${fn}.md`;
+      const shouldDownload = window.confirm(
+        getCurrentLanguage() === 'ja'
+          ? 'ローカルサーバーとの接続が切れたため、保存できませんでした。\n編集中の内容をMarkdownファイルとしてブラウザからダウンロードしますか？'
+          : 'Failed to save because the local server connection was lost.\nWould you like to download your edits as a Markdown file directly from the browser?'
+      );
+      if (shouldDownload) {
+        triggerDownload(content, filenameWithExt);
+      }
     }
   }, [editor, filename, hasSavedToDisk, refreshHistory]);
 
@@ -246,8 +289,21 @@ export const useTpad = (editor) => {
     } catch (err) {
       console.error(err);
       setStatus('Error');
+
+      // Fallback: download directly in browser
+      const content = editor.storage.markdown.getMarkdown();
+      const fn = filename || 'untitled';
+      const filenameWithExt = fn.endsWith('.md') ? fn : `${fn}.md`;
+      const shouldDownload = window.confirm(
+        getCurrentLanguage() === 'ja'
+          ? 'ローカルサーバー（Claude Code）との接続が切れたため、変更を送り返せませんでした。\n編集中の内容をMarkdownファイルとしてブラウザからダウンロードしますか？'
+          : 'Failed to return content because the connection to Claude Code was lost.\nWould you like to download your edits as a Markdown file directly from the browser?'
+      );
+      if (shouldDownload) {
+        triggerDownload(content, filenameWithExt);
+      }
     }
-  }, [editor]);
+  }, [editor, filename]);
 
   return {
     filename, setFilename,

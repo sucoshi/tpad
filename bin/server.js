@@ -461,7 +461,7 @@ export function createApp({ initialContent = '', initialFilename = '', targetFil
   const startupTime = Date.now();
   const heartbeatInterval = setInterval(() => {
     if (hasReceivedFirstHeartbeat) {
-      if (Date.now() - lastHeartbeat > 3000) {
+      if (Date.now() - lastHeartbeat > 30000) {
         clearInterval(heartbeatInterval);
         console.error("tpad: Connection lost (browser tab closed). Exiting...");
         if (fs.existsSync(backupFile)) {
@@ -476,7 +476,7 @@ export function createApp({ initialContent = '', initialFilename = '', targetFil
         }
       }
     } else {
-      if (Date.now() - startupTime > 15000) {
+      if (Date.now() - startupTime > 30000) {
         clearInterval(heartbeatInterval);
         console.error("tpad: Initial browser connection timed out. Exiting...");
         if (fs.existsSync(backupFile)) {
